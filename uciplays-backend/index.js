@@ -6,6 +6,7 @@ const resultadosRoutes = require('./src/routes/resultados.routes');
 const rankingRoutes = require('./src/routes/ranking.routes');
 const facultadesRoutes = require('./src/routes/facultades.routes');
 const eventosRoutes = require('./src/routes/eventos.routes');
+const { configurarEstaticos } = require('./src/config/static');
 
 const app = express();
 app.use(cors());
@@ -58,6 +59,7 @@ const inicializarDB = async () => {
 };
 
 inicializarDB();
+configurarEstaticos(app);
 
 app.use('/api/resultados', resultadosRoutes);
 app.use('/api/ranking', rankingRoutes);
