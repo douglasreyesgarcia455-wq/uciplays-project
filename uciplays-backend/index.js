@@ -4,6 +4,7 @@ const db = require('./src/config/db');
 
 const resultadosRoutes = require('./src/routes/resultados.routes');
 const rankingRoutes = require('./src/routes/ranking.routes');
+const facultadesRoutes = require('./src/routes/facultades.routes');
 const eventosRoutes = require('./src/routes/eventos.routes');
 
 const app = express();
@@ -60,6 +61,7 @@ inicializarDB();
 
 app.use('/api/resultados', resultadosRoutes);
 app.use('/api/ranking', rankingRoutes);
+app.use('/api/facultades', facultadesRoutes);
 app.use('/api/eventos', eventosRoutes);
 
 const PORT = 4000;
