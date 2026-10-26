@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- feat(backend): módulo de estáticos /assets y /jump; copiados logos institucionales (JUMP, UCI, favicon, respaldo) a uciplays-backend/public/assets/.
+- docs: logo_url en facultades queda NULL porque los nombres en BD son de prueba y los logos reales de facultades aún no existen. Pendiente: migración 002_seed_logo_url.sql cuando lleguen datos reales.
+
 ### Fase 0: inicialización del repositorio
 - Creación del repositorio base `uciplays-project`.
 - Agregado `.gitignore`, `.editorconfig`, `README.md`, `CHANGELOG.md`.
