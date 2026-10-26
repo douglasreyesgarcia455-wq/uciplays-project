@@ -1,0 +1,33 @@
+# Dependencias
+node_modules/
+
+# Builds / salida
+dist/
+build/
+
+# Entorno
+.env
+.env.local
+
+# Bases de datos SQLite (no versionar binarios ni datos)
+*.sqlite
+*.db
+*.sqlite3
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Capturas sueltas del frontend nuevo (solo carpeta raíz de JUMP (2)/JUMP/)
+proyecto-jump-frontend/JUMP\ (2)/JUMP/*.png
+
+# Documentación no código
+*.docx
+*.doc
+
+# NO ignorar los logos del frontend nuevo (se versionan)
+!proyecto-jump-frontend/JUMP\ (2)/JUMP/Project/assets/**/*.png

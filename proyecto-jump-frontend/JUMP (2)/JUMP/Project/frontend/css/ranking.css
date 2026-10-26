@@ -1,0 +1,107 @@
+/*-----------------------RANKING---------------------------*/
+
+.ranking {
+    width: 100%;
+    max-width: 60rem; 
+    margin: 0 auto;
+    padding: 1rem 0 3rem;
+}
+
+.ranking__titulo {
+    color: #121281;
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.ranking__tabla-contenedor {
+    background-color: #FFFFFF;
+    border-radius: 1rem;
+    box-shadow: 0 0.35rem 1rem rgb(28 27 46 / 12%);
+    overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
+}
+
+.ranking__tabla {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px; /* Evita que las columnas se aplasten en móviles */
+}
+
+.ranking__tabla th,
+.ranking__tabla td {
+    padding: 1.2rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.ranking__tabla th {
+    background-color: var(--color-surface-secondary);
+    font-weight: 700;
+    color: var(--color-action);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+.ranking__tabla th.text-left {
+    text-align: left;
+}
+
+.ranking__tabla tbody tr {
+    transition: background-color 150ms ease;
+}
+
+.ranking__tabla tbody tr:hover {
+    background-color: var(--color-focus);
+}
+
+.ranking__tabla tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ranking__posicion {
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--color-action);
+}
+
+/* Contenedor flexible para alinear el logo y el texto de la facultad */
+.ranking__facultad {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.ranking__logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: var(--color-bg);
+}
+
+.ranking__nombre {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.ranking__puntos-total {
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: #1C1B2E;
+}
+
+/* Leyenda con colores del sistema de información */
+.ranking__leyenda {
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--color-info);
+    font-size: 0.95rem;
+    background-color: var(--color-info-bg);
+    padding: 1.2rem;
+    border-radius: 0.8rem;
+    border: 1px solid var(--color-info);
+}

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/css/inicio.css">
+    <script src="/backend/js/fecha.js" defer></script>
+    <script src="/backend/js/formulario.js" defer></script>
+    <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
+    <title>JUMP</title>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header__container">
+
+        <a class="header__brand" href="index.html" aria-label="JUMP, ir al inicio">
+            <img class="header__logo header__logo--light" src="/assets/Logo/JUMP_logo oscuro.png" alt="">
+        </a>
+
+        <nav class="header__nav" aria-label="Navegación principal">
+            <ul class="header__nav-list">
+                <li class="header__nav-item">
+                    <a class="header__nav-link header__nav-link--active" href="index.html" aria-current="page">Inicio</a>
+                </li>
+                <li class="header__nav-item">
+                    <a class="header__nav-link" href="ranking.html">Ranking</a>
+                </li>
+                <li class="header__nav-item">
+                    <a class="header__nav-link" href="cartelera.html">Cartelera</a>
+                </li>
+                <li class="header__nav-item">
+                    <a class="header__nav-link" href="estadisticas.html">Estadísticas</a>
+                </li>
+            </ul>
+        </nav>
+
+        <a class="header__admin-link" href="acceso-administracion.html">
+            <span class="header__admin-label">Administración</span>
+            <span class="header__admin-icon" aria-hidden="true">
+                <svg class="header__admin-icon-svg" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+        </a>
+
+        </div>
+    </header>
+
+
+    <main class="main">
+    <div class="main__grid">
+    <div class="main__item main__item-resumen">
+        <h1 class="main__resumen-titulo" id="main__resumen-titulo">
+        NOVEDADES DEPORTIVAS
+    </h1>
+
+    <ul class="main__resumen-lista">
+    <li class="main__resumen-card main__resumen-card-total">
+        <h2 class="main__resumen-card-titulo">Total de eventos</h2>
+        <p class="main__resumen-card-valor">—</p>
+    </li>
+
+    <li class="main__resumen-card main__resumen-card-curso">
+        <h2 class="main__resumen-card-titulo">En curso</h2>
+        <p class="main__resumen-card-valor">—</p>
+    </li>
+
+    <li class="main__resumen-card main__resumen-card-finalizado">
+        <h2 class="main__resumen-card-titulo">Finalizados</h2>
+        <p class="main__resumen-card-valor">—</p>
+    </li>
+</ul>
+    </div>
+
+<div class="main__item main__item-dia" aria-label="Fechas de eventos">
+    <a class="main__fecha-enlace"
+        href="cartelera.html?fecha=2026-09-30#eventos"
+        data-desplazamiento="-1">
+        <time class="main__fecha" datetime="2026-09-30">
+            <span class="main__fecha-mes">SEP</span>
+            <span class="main__fecha-dia">30</span>
+            <span class="main__fecha-semana">MIÉRCOLES</span>
+        </time>
+    </a>
+
+    <a class="main__fecha-enlace"
+        href="cartelera.html?fecha=2026-10-01#eventos"
+        data-desplazamiento="0"
+        aria-current="date">
+        <time class="main__fecha" datetime="2026-10-01">
+            <span class="main__fecha-mes">OCT</span>
+            <span class="main__fecha-dia">1</span>
+            <span class="main__fecha-semana">JUEVES</span>
+        </time>
+    </a>
+
+    <a class="main__fecha-enlace"
+        href="cartelera.html?fecha=2026-10-02#eventos"
+        data-desplazamiento="1">
+        <time class="main__fecha" datetime="2026-10-02">
+            <span class="main__fecha-mes">OCT</span>
+            <span class="main__fecha-dia">2</span>
+            <span class="main__fecha-semana">VIERNES</span>
+        </time>
+    </a>
+
+    <a class="main__fecha-completa" href="cartelera.html">
+    <span>Ver cartelera completa</span>
+    <span class="main__fecha-completa-icono" aria-hidden="true">
+        <svg
+            class="main__fecha-completa-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            focusable="false"
+        >
+            <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+        </svg>
+    </span>
+</a>
+    </div>
+
+        <!-- MAIN EVENT -->
+        <div class="main__item main__item-mainevent">
+            <article class="main-event">
+                
+                <header class="main-event__encabezado">
+                    <span class="main-event__etiqueta">Main Event</span>
+                    <span class="main-event__estado main-event__estado--curso">En Curso</span>
+                </header>
+
+                <h2 class="main-event__titulo">Final de Volleyball</h2>
+                
+                <div class="main-event__equipos">
+                    <div class="main-event__equipo">
+                        <img class="main-event__logo" src="/assets/logos/fei-logo.png" alt="Logo FEI">
+                        <span class="main-event__nombre">FEI</span>
+                    </div>
+                    
+                    <span class="main-event__vs">VS</span>
+                    
+                    <div class="main-event__equipo">
+                        <img class="main-event__logo" src="/assets/logos/fici-logo.png" alt="Logo FICI">
+                        <span class="main-event__nombre">FICI</span>
+                    </div>
+                </div>
+
+                <div class="main-event__info">
+                    📅 1 de Octubre, 2026 • 🕒 14:00 • 📍 Cancha de Volleyball 3
+                </div>
+            </article>
+        </div>
+
+        <!-- MINI RANKING -->
+        <div class="main__item main__item-ranking">
+            <section class="mini-ranking">
+                <header class="mini-ranking__cabecera">
+                    <h2 class="mini-ranking__titulo">Ranking</h2>
+                </header>
+                
+                <ol class="mini-ranking__lista">
+                    
+                    <li class="mini-ranking__item mini-ranking__item--primero">
+                        <span class="mini-ranking__posicion">1</span>
+                        <img class="mini-ranking__logo" src="/assets/logos/fei-logo.png" alt="Logo FEI">
+                        <span class="mini-ranking__nombre">FEI</span>
+                        <span class="mini-ranking__puntos">77</span>
+                    </li>
+                    
+                    
+                    <li class="mini-ranking__item">
+                        <span class="mini-ranking__posicion">2</span>
+                        <img class="mini-ranking__logo" src="/assets/logos/fte-logo.png" alt="Logo FTE">
+                        <span class="mini-ranking__nombre">FTE</span>
+                        <span class="mini-ranking__puntos">40</span>
+                    </li>
+
+                    
+                    <li class="mini-ranking__item">
+                        <span class="mini-ranking__posicion">3</span>
+                        <img class="mini-ranking__logo" src="/assets/logos/fici-logo.png" alt="Logo FICI">
+                        <span class="mini-ranking__nombre">FICI</span>
+                        <span class="mini-ranking__puntos">22</span>
+                    </li>
+
+                    
+                    <li class="mini-ranking__item">
+                        <span class="mini-ranking__posicion">4</span>
+                        <img class="mini-ranking__logo" src="/assets/logos/citi-logo.png" alt="Logo CITI">
+                        <span class="mini-ranking__nombre">CITI</span>
+                        <span class="mini-ranking__puntos">16</span>
+                    </li>
+
+                    
+                    <li class="mini-ranking__item">
+                        <span class="mini-ranking__posicion">5</span>
+                        <img class="mini-ranking__logo" src="/assets/logos/fce-logo.png" alt="Logo FCE">
+                        <span class="mini-ranking__nombre">FCE</span>
+                        <span class="mini-ranking__puntos">6</span>
+                    </li>
+
+                    
+                    <li class="mini-ranking__item">
+                        <span class="mini-ranking__posicion">6</span>
+                        <img class="mini-ranking__logo" src="/assets/logos/fti-logo.png" alt="Logo FTI">
+                        <span class="mini-ranking__nombre">FTI</span>
+                        <span class="mini-ranking__puntos">1</span>
+                    </li>
+                </ol>
+
+                <footer class="mini-ranking__pie">
+                    <a class="mini-ranking__enlace" href="ranking.html">Ver tabla completa</a>
+                </footer>
+            </section>
+        </div>
+
+        <!-- EVENTO PRÓXIMO 1 -->
+        <div class="main__item main__item-bottom-izq">
+            <a href="cartelera.html?fecha=2026-10-02" class="tarjeta-evento">
+                <header class="tarjeta-evento__cabecera">
+                    <span class="tarjeta-evento__deporte">Fútbol</span>
+                    <span class="tarjeta-evento__estado tarjeta-evento__estado--curso" title="En curso"></span>
+                </header>
+                
+                <div class="tarjeta-evento__cuerpo">
+                    <img class="tarjeta-evento__logo" src="/assets/logos/fte-logo.png" alt="Logo FTE">
+                    <span class="tarjeta-evento__vs">VS</span>
+                    <img class="tarjeta-evento__logo" src="/assets/logos/fce-logo.png" alt="Logo FCE">
+                </div>
+                
+                <footer class="tarjeta-evento__pie">
+                    <span class="tarjeta-evento__fecha">📅 2 Oct • 10:00</span>
+                </footer>
+            </a>
+        </div>
+
+        <!-- EVENTO PRÓXIMO 2 -->
+        <div class="main__item main__item-bottom-cen">
+            <a href="cartelera.html?fecha=2026-10-02" class="tarjeta-evento">
+                <header class="tarjeta-evento__cabecera">
+                    <span class="tarjeta-evento__deporte">Béisbol</span>
+                    <span class="tarjeta-evento__estado tarjeta-evento__estado--programado" title="Programado"></span>
+                </header>
+                
+                <div class="tarjeta-evento__cuerpo">
+                    <img class="tarjeta-evento__logo" src="/assets/logos/citi-logo.png" alt="Logo CITI">
+                    <span class="tarjeta-evento__vs">VS</span>
+                    <img class="tarjeta-evento__logo" src="/assets/logos/fti-logo.png" alt="Logo FTI">
+                </div>
+                
+                <footer class="tarjeta-evento__pie">
+                    <span class="tarjeta-evento__fecha">📅 2 Oct • 14:00</span>
+                </footer>
+            </a>
+        </div>
+
+        <!-- EVENTO PRÓXIMO 3 -->
+        <div class="main__item main__item-bottom-der">
+            <a href="cartelera.html?fecha=2026-11-05" class="tarjeta-evento">
+                <header class="tarjeta-evento__cabecera">
+                    <span class="tarjeta-evento__deporte">Ajedrez</span>
+                    <span class="tarjeta-evento__estado tarjeta-evento__estado--programado" title="Programado"></span>
+                </header>
+                
+                <div class="tarjeta-evento__cuerpo">
+                    <img class="tarjeta-evento__logo" src="/assets/logos/fici-logo.png" alt="Logo FICI">
+                    <span class="tarjeta-evento__vs">VS</span>
+                    <img class="tarjeta-evento__logo" src="/assets/logos/citi-logo.png" alt="Logo CITI">
+                </div>
+                
+                <footer class="tarjeta-evento__pie">
+                    <span class="tarjeta-evento__fecha">📅 5 Nov • 09:00</span>
+                </footer>
+            </a>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer__container">
+            
+            <!-- Espacio para Logo Izquierdo (Logo principal) -->
+            <a class="footer__brand footer__brand--izq" href="index.html" aria-label="Ir al inicio">
+                <img class="footer__logo" src="/assets/Logo/JUMP_logo claro.png" alt="Logo JUMP">
+            </a>
+
+            <!-- Enlaces Centrales -->
+            <nav class="footer__nav" aria-label="Navegación del pie de página">
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="index.html">Inicio</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="ranking.html">Ranking</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="cartelera.html">Cartelera</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="estadisticas.html">Estadísticas</a></li>
+                </ul>
+            </nav>
+
+            <!-- Espacio para Logo Derecho (Universidad, facultad, patrocinador, etc.) -->
+            <a class="footer__brand footer__brand--der" href="index.html" aria-label="Ir al inicio">
+                <img class="footer__logo" src="/assets/Logo/Logo Uci mor.png" alt="Logo UCI">
+            </a>
+
+        </div>
+    </footer>
+
+    <!-- VENTANA MODAL DE ADMINISTRACIÓN -->
+<div class="modal-admin" id="modal-admin">
+    <div class="modal-admin__contenido">
+        <button class="modal-admin__cerrar" id="btn-cerrar-admin" aria-label="Cerrar ventana">&times;</button>
+        <h2 class="modal-admin__titulo">Solo Administración</h2>
+        
+        <form class="modal-admin__form" id="form-admin">
+            <div class="modal-admin__grupo">
+                <label for="admin-user" class="modal-admin__label">Usuario</label>
+                <input type="text" id="admin-user" class="modal-admin__input" required placeholder="Ingresa tu usuario">
+            </div>
+            
+            <div class="modal-admin__grupo">
+                <label for="admin-pass" class="modal-admin__label">Contraseña</label>
+                <input type="password" id="admin-pass" class="modal-admin__input" required placeholder="Ingresa tu contraseña">
+            </div>
+            
+            <button type="submit" class="modal-admin__btn-submit">Ingresar</button>
+        </form>
+    </div>
+</div>
+    
+</body>
+</html>

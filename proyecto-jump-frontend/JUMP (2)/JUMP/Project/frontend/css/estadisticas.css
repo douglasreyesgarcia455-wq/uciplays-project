@@ -1,0 +1,205 @@
+/* /frontend/css/estadisticas.css */
+
+.estadisticas-contenedor {
+    width: 100%;
+    max-width: 60rem; 
+    margin: 1rem auto 0;
+    padding-bottom: 3rem;
+}
+
+.estadisticas__titulo {
+    color: #121281;
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Panel de Filtros */
+.estadisticas__filtros {
+    display: flex;
+    gap: 2rem;
+    background-color: var(--color-surface);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.35rem 1rem rgb(28 27 46 / 10%);
+    margin-bottom: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.estadisticas__filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 250px;
+}
+
+.estadisticas__filtro-grupo label {
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+/* /frontend/css/estadisticas.css */
+
+.estadisticas__select {
+    /* Elimina la flecha por defecto del navegador */
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    width: 100%;
+    min-width: 200px;
+    padding: 0.8rem 2.5rem 0.8rem 1.2rem;
+    
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #121281; /* Texto azul oscuro */
+    
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.6rem;
+    cursor: pointer;
+    outline: none;
+    
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    
+    /* Flecha (Chevron) incrustada en azul oscuro */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23121281' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2em;
+}
+
+.estadisticas__select:hover {
+    border-color: var(--color-action);
+}
+
+.estadisticas__select:focus {
+    border-color: var(--color-action);
+    box-shadow: 0 0 0 3px rgba(26, 16, 136, 0.15); /* Anillo de enfoque suave */
+}
+
+/* Colores para las opciones desplegadas */
+.estadisticas__select option {
+    color: var(--color-text-primary);
+    font-weight: 400;
+}
+
+/* Tarjetas de Resumen */
+.estadisticas__resumen {
+    display: grid;
+    /* Reducimos el ancho mínimo de 200px a 150px para achicar los cuadros */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem; /* Reducimos la separación entre cuadros */
+    margin-bottom: 2rem;
+}
+
+.estadisticas__card {
+    background-color: var(--color-info-bg);
+    padding: 1rem; /* Reducimos el relleno interno (antes 1.5rem) */
+    border-radius: 0.8rem;
+    text-align: center;
+    border: 1px solid var(--color-info);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.estadisticas__card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-info);
+    font-size: 0.9rem; /* Achicamos ligeramente el título */
+    font-weight: 700;
+}
+
+.estadisticas__valor {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: 1.8rem; /* Reducimos el tamaño del número (antes 2.5rem) */
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 2.2rem; /* Mantiene la misma altura para números y logos */
+}
+
+/* Nueva clase para controlar el tamaño del logo dentro de la tarjeta */
+.estadisticas__logo {
+    height: 2rem;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Cuadrícula de Gráficos */
+.estadisticas__graficos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* El gráfico principal ocupará el ancho completo */
+.estadisticas__grafico-caja--full {
+    grid-column: span 2;
+}
+
+.estadisticas__grafico-caja {
+    background-color: var(--color-surface);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.35rem 1rem rgb(28 27 46 / 10%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.estadisticas__grafico-titulo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 1.5rem 0;
+    align-self: flex-start;
+}
+
+/* Encabezado especial para el Análisis Frente a Frente */
+.estadisticas__h2h-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.estadisticas__h2h-header .estadisticas__grafico-titulo {
+    margin-bottom: 0;
+}
+
+.estadisticas__h2h-selectores {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+}
+
+.estadisticas__h2h-selectores .estadisticas__select {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+}
+
+/* Responsividad para pantallas móviles y tablets */
+@media (max-width: 800px) {
+    .estadisticas__graficos {
+        grid-template-columns: 1fr;
+    }
+    
+    .estadisticas__grafico-caja--full {
+        grid-column: span 1;
+    }
+}
