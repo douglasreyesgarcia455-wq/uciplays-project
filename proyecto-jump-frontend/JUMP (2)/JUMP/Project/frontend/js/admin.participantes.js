@@ -95,6 +95,14 @@ window.adminParticipantes = (function () {
         }
     }
 
+    function verEquiposDeFacultad(facultadId) {
+        state.facultadActual = state.facultades.find(f => f.id === facultadId) || null;
+        const $titulo = document.getElementById('equipos-facultad-titulo');
+        if ($titulo) $titulo.textContent = 'Equipos de ' + (state.facultadActual ? state.facultadActual.nombre : '');
+        renderEquipos();
+        cambiarVista('equipos');
+    }
+
     function renderFacultades() {
         const $tbody = document.getElementById('facultades-tbody');
         if (!$tbody) return;

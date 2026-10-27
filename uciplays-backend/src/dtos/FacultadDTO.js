@@ -1,13 +1,12 @@
+// FacultadDTO.js — Mapeo de fila de facultad a objeto de respuesta.
 function toDTO(row) {
-  if (row === null || row === undefined) {
-    return null;
-  }
-
-  return {
-    id: row.id === undefined ? null : row.id,
-    nombre: row.nombre === undefined ? null : row.nombre,
-    logo_url: row.logo_url === undefined ? null : row.logo_url
-  };
+    if (row === null || row === undefined) return null;
+    return {
+        id: row.id !== undefined ? row.id : null,
+        nombre: row.nombre !== undefined ? row.nombre : null,
+        logo_url: row.logo_url !== undefined ? row.logo_url : null,
+        total_equipos: row.total_equipos !== undefined ? row.total_equipos : 0
+    };
 }
 
 module.exports = { toDTO };
