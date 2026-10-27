@@ -1,11 +1,10 @@
 // admin.eventos.js — Controlador del CRUD de eventos.
-// Usa admin.paginado, admin.validacion, admin.toast (Invención Pura).
-// Usa eventos.api, deportes.api, equipos.api (Facade).
+// Delega la tabla de participantes en admin.eventos.participantes.js.
+// Delega el paginado en admin.paginado.js.
 
 window.adminEventos = (function () {
     let state = null;
     let paginado = null;
-    let participantesTmp = [];  // [{equipo_id}]
 
     function init(ctx) {
         state = {
@@ -16,15 +15,15 @@ window.adminEventos = (function () {
             onLogin: ctx.onLogin || (() => {})
         };
 
-        poblarSelectDeporte();
+        // Inicializar módulo de participantes
+        window.adminEventosParticipantes.init({ equipos: state.equipos, deportes: state.deportes });
+
+        window.adminEventosParticipantes.poblarDeporte();
         enlazarBotones();
         initPaginado();
         renderLista(state.eventos);
-        // Las filas se agregan cuando actualizar() recibe equipos
-        if (state.equipos && state.equipos.length > 0) {
-            agregarFilaParticipante();
-            agregarFilaParticipante();
-        }
+        window.adminEventosParticipantes.agregarFila();
+        window.adminEventosParticipantes.agregarFila();
     }
 
     function actualizar(ctx) {
@@ -32,125 +31,17 @@ window.adminEventos = (function () {
         state.eventos = ctx.eventos || [];
         state.deportes = ctx.deportes || [];
         state.equipos = ctx.equipos || [];
-        poblarSelectDeporte();
+        window.adminEventosParticipantes.actualizar({ equipos: state.equipos, deportes: state.deportes });
+        window.adminEventosParticipantes.poblarDeporte();
         renderLista(state.eventos);
+
         const $tbody = document.getElementById('evento-participantes-tbody');
         if ($tbody && $tbody.children.length === 0 && state.equipos && state.equipos.length > 0) {
-            agregarFilaParticipante();
-            agregarFilaParticipante();
+            window.adminEventosParticipantes.agregarFila();
+            window.adminEventosParticipantes.agregarFila();
         }
     }
 
-    // ============================================================
-    // SELECT DE DEPORTE
-    // ============================================================
-    function poblarSelectDeporte() {
-        const $dep = document.getElementById('evento-deporte');
-        if (!$dep) return;
-        const valorActual = $dep.value;
-        $dep.innerHTML = '';
-        state.deportes.forEach(d => {
-            const opt = document.createElement('option');
-            opt.value = d.id;
-            opt.textContent = d.nombre;
-            $dep.appendChild(opt);
-        });
-        if (valorActual) $dep.value = valorActual;
-        $dep.addEventListener('change', () => {
-            actualizarOpcionesEquipos();
-        });
-    }
-
-    function equiposDelDeporte(deporteId) {
-        if (!deporteId) return [];
-        return state.equipos.filter(eq => eq.deporte_id === deporteId);
-    }
-
-    // ============================================================
-    // TABLA DINÁMICA DE PARTICIPANTES
-    // ============================================================
-    function agregarFilaParticipante(equipoId) {
-        const $tbody = document.getElementById('evento-participantes-tbody');
-        if (!$tbody) return;
-        const $dep = document.getElementById('evento-deporte');
-        const deporteId = $dep ? parseInt($dep.value) : null;
-        const equipos = equiposDelDeporte(deporteId);
-        if (equipos.length === 0) {
-            // Aún no se cargaron los equipos o no hay equipos del deporte. No hacer nada.
-            return;
-        }
-
-        const tr = document.createElement('tr');
-        const opts = equipos.map(eq =>
-            `<option value="${eq.id}" ${String(eq.id) === String(equipoId) ? 'selected' : ''}>${eq.facultad} ${eq.nombre}</option>`
-        ).join('');
-
-        tr.innerHTML = `
-            <td>
-                <select class="admin-form__input" data-equipo-select>
-                    ${opts}
-                </select>
-            </td>
-            <td>
-                <button type="button" class="admin-btn-icono admin-btn-icono--eliminar" data-quitar aria-label="Quitar">
-                    <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-            </td>
-        `;
-        $tbody.appendChild(tr);
-
-        tr.querySelector('[data-quitar]').addEventListener('click', () => {
-            tr.remove();
-        });
-    }
-
-    function actualizarOpcionesEquipos() {
-        const $tbody = document.getElementById('evento-participantes-tbody');
-        if (!$tbody) return;
-        const $dep = document.getElementById('evento-deporte');
-        const deporteId = $dep ? parseInt($dep.value) : null;
-        const equipos = equiposDelDeporte(deporteId);
-
-        if (equipos.length === 0) {
-            // No hay equipos para este deporte. Vaciar tbody.
-            $tbody.innerHTML = '';
-            return;
-        }
-
-        $tbody.querySelectorAll('tr').forEach(tr => {
-            const sel = tr.querySelector('[data-equipo-select]');
-            if (!sel) return;
-            const valorActual = sel.value;
-            sel.innerHTML = equipos.map(eq =>
-                `<option value="${eq.id}" ${String(eq.id) === String(valorActual) ? 'selected' : ''}>${eq.facultad} ${eq.nombre}</option>`
-            ).join('');
-        });
-    }
-
-    function leerParticipantesFormulario() {
-        const $tbody = document.getElementById('evento-participantes-tbody');
-        if (!$tbody) return [];
-        const ids = [];
-        $tbody.querySelectorAll('[data-equipo-select]').forEach(sel => {
-            const id = parseInt(sel.value);
-            if (!isNaN(id)) ids.push(id);
-        });
-        return ids;
-    }
-
-    function limpiarFormulario() {
-        const $tbody = document.getElementById('evento-participantes-tbody');
-        if ($tbody) $tbody.innerHTML = '';
-        document.getElementById('evento-fecha').value = '';
-        document.getElementById('evento-hora').value = '';
-        document.getElementById('evento-lugar').value = '';
-        agregarFilaParticipante();
-        agregarFilaParticipante();
-    }
-
-    // ============================================================
-    // PAGINADO Y LISTA
-    // ============================================================
     function initPaginado() {
         if (paginado) return;
         paginado = window.adminPaginado.crear({
@@ -217,9 +108,6 @@ window.adminEventos = (function () {
         });
     }
 
-    // ============================================================
-    // BOTONES
-    // ============================================================
     function enlazarBotones() {
         const $dep = document.getElementById('evento-deporte');
         const $fecha = document.getElementById('evento-fecha');
@@ -227,27 +115,25 @@ window.adminEventos = (function () {
         const $lugar = document.getElementById('evento-lugar');
         [$dep, $fecha, $hora, $lugar].forEach(window.adminValidacion.enlazarLimpiar);
 
-        // Al cambiar el deporte, repoblar selects y agregar 2 filas si el tbody está vacío
-        if ($dep) {
+        if ($dep && !$dep.dataset.listenerChange) {
+            $dep.dataset.listenerChange = '1';
             $dep.addEventListener('change', () => {
                 const $tbody = document.getElementById('evento-participantes-tbody');
                 if (!$tbody) return;
                 if ($tbody.children.length === 0) {
-                    agregarFilaParticipante();
-                    agregarFilaParticipante();
+                    window.adminEventosParticipantes.agregarFila();
+                    window.adminEventosParticipantes.agregarFila();
                 } else {
-                    actualizarOpcionesEquipos();
+                    window.adminEventosParticipantes.actualizarOpciones();
                 }
             });
         }
 
-        const $btnAgregar = document.getElementById('btn-agregar-participante');
-        if ($btnAgregar) {
-            $btnAgregar.addEventListener('click', () => agregarFilaParticipante());
-        }
-
         const $btn = document.getElementById('btn-crear-evento');
-        if ($btn) $btn.addEventListener('click', crear);
+        if ($btn && !$btn.dataset.listener) {
+            $btn.dataset.listener = '1';
+            $btn.addEventListener('click', crear);
+        }
     }
 
     function validar() {
@@ -263,7 +149,7 @@ window.adminEventos = (function () {
         if (!$hora || !$hora.value) { window.adminValidacion.marcarError($hora, 'Ingresa la hora'); ok = false; }
         if (!$lugar || $lugar.value.trim().length < 3) { window.adminValidacion.marcarError($lugar, 'El lugar debe tener al menos 3 caracteres'); ok = false; }
 
-        const ids = leerParticipantesFormulario();
+        const ids = window.adminEventosParticipantes.leerIds();
         if (ids.length < 2) {
             window.adminToast.mostrar('Se requieren al menos 2 equipos', 'error');
             ok = false;
@@ -278,7 +164,7 @@ window.adminEventos = (function () {
 
     async function crear() {
         if (!validar()) return;
-        const ids = leerParticipantesFormulario();
+        const ids = window.adminEventosParticipantes.leerIds();
         const payload = {
             deporte_id: parseInt(document.getElementById('evento-deporte').value),
             fecha: document.getElementById('evento-fecha').value,
@@ -290,7 +176,7 @@ window.adminEventos = (function () {
         try {
             await window.apiClient.post('/eventos', payload);
             window.adminToast.mostrar('Evento creado correctamente');
-            limpiarFormulario();
+            window.adminEventosParticipantes.limpiar();
             await state.onRecargar();
         } catch (e) {
             if (e.status === 401) { state.onLogin(); return; }
@@ -360,7 +246,6 @@ window.adminEventos = (function () {
         });
         if (!okIniciar) return;
         try {
-            // Calcular fecha/hora actual del sistema
             const ahora = new Date();
             const yy = ahora.getFullYear();
             const mm = String(ahora.getMonth() + 1).padStart(2, '0');
@@ -370,7 +255,6 @@ window.adminEventos = (function () {
             const fechaHoy = yy + '-' + mm + '-' + dd;
             const horaAhora = hh + ':' + mi;
 
-            // Determinar si hay que actualizar
             let fechaFinal = ev.fecha;
             let horaFinal = ev.hora;
             let fechaActualizada = false;
