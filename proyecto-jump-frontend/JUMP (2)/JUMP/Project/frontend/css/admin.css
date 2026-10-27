@@ -393,3 +393,92 @@
 .admin-form__tabla--compacta th {
     padding: 0.3rem 0.5rem;
 }
+
+/* Slider horizontal de participantes (3 vistas) */
+.admin-participantes-slider {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    align-items: flex-start;
+}
+.admin-participantes-vista {
+    flex: 0 0 100%;
+    width: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+}
+.admin-participantes-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: #65647A;
+}
+.admin-btn--link {
+    background: none;
+    border: none;
+    color: #1a1088;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 0.95rem;
+}
+.admin-btn--link:hover {
+    color: #5A4BFF;
+}
+.admin-tabla-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+.admin-tabla-scroll .admin-form__tabla {
+    margin: 0;
+}
+.admin-tabla-scroll .admin-form__tabla thead {
+    position: sticky;
+    top: 0;
+    background: #f5f5f5;
+    z-index: 1;
+}
+
+/* Botones de vista (Facultades / Equipos) */
+.admin-vista-botones {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+.admin-vista-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.admin-vista-btn.activo {
+    background: #1a1088;
+    color: #fff;
+    border-color: #1a1088;
+    transform: scale(1.02);
+    box-shadow: 0 2px 6px rgba(26, 16, 136, 0.3);
+}
+.admin-vista-btn:hover:not(.activo) {
+    background: #e0e0e0;
+}
+.admin-vista {
+    animation: fadeIn 0.2s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Botón pequeño en la lista de eventos */
+.admin-btn--sm {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.85rem;
+}

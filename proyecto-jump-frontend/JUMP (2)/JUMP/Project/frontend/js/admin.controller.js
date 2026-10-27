@@ -87,6 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
         onRecargar: cargarTodo
     });
 
+    window.adminDisciplinas.init();
+    window.adminParticipantes.init();
+    window.adminSanciones.init();
+
     if (window.authApi.isLoggedIn()) {
         ocultarLogin();
         cargarTodo();

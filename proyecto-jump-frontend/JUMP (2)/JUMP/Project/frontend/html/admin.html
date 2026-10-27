@@ -8,6 +8,8 @@
     <script src="/jump/frontend/js/api-client.js" defer></script>
     <script src="/jump/frontend/js/auth.api.js" defer></script>
     <script src="/jump/frontend/js/eventos.api.js" defer></script>
+    <script src="/jump/frontend/js/ranking.api.js" defer></script>
+    <script src="/jump/frontend/js/sanciones.api.js" defer></script>
     <script src="/jump/frontend/js/facultades.api.js" defer></script>
     <script src="/jump/frontend/js/deportes.api.js" defer></script>
     <script src="/jump/frontend/js/equipos.api.js" defer></script>
@@ -17,6 +19,9 @@
     <script src="/jump/frontend/js/admin.tabs.js" defer></script>
     <script src="/jump/frontend/js/admin.eventos.js" defer></script>
     <script src="/jump/frontend/js/admin.resultados.js" defer></script>
+    <script src="/jump/frontend/js/admin.disciplinas.js" defer></script>
+    <script src="/jump/frontend/js/admin.participantes.js" defer></script>
+    <script src="/jump/frontend/js/admin.sanciones.js" defer></script>
     <script src="/jump/frontend/js/admin.controller.js" defer></script>
     <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
     <title>Panel de Administración - JUMP</title>
@@ -83,14 +88,6 @@
                                 <select id="evento-deporte" class="admin-form__input"></select>
                             </div>
                             <div class="admin-form__grupo">
-                                <label class="admin-form__label">Equipo Local</label>
-                                <select id="evento-local" class="admin-form__input"></select>
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Equipo Visitante</label>
-                                <select id="evento-visitante" class="admin-form__input"></select>
-                            </div>
-                            <div class="admin-form__grupo">
                                 <label class="admin-form__label">Fecha</label>
                                 <input type="date" id="evento-fecha" class="admin-form__input">
                             </div>
@@ -103,6 +100,15 @@
                                 <input type="text" id="evento-lugar" class="admin-form__input" placeholder="Ej: Cancha Principal">
                             </div>
                         </div>
+
+                        <h3 class="admin-seccion__subtitulo" style="margin-top:1rem;">Participantes</h3>
+                        <table class="admin-form__tabla" id="evento-participantes-tabla">
+                            <thead>
+                                <tr><th>Equipo</th><th></th></tr>
+                            </thead>
+                            <tbody id="evento-participantes-tbody"></tbody>
+                        </table>
+                        <button type="button" id="btn-agregar-participante" class="admin-btn" style="margin-top:0.5rem;">+ Agregar equipo</button>
                         <button type="button" id="btn-crear-evento" class="admin-btn admin-btn--primario">Lanzar a Cartelera</button>
                     </form>
                 </div>
@@ -169,59 +175,34 @@
             <!-- PESTAÑA 3: SANCIONES -->
             <section id="sanciones" class="admin-tab">
                 <header class="admin-panel__cabecera">
-                    <h1 class="admin-panel__titulo">Panel de Sanciones</h1>
+                    <h1 class="admin-panel__titulo">Sanciones</h1>
                 </header>
-                
-                <div class="admin-seccion admin-seccion--alerta">
-                    <h2 class="admin-seccion__titulo">Aplicar Penalización</h2>
-                    <form class="admin-form">
-                        <div class="admin-form__grid">
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Facultad a Sancionar</label>
-                                <select class="admin-form__input"><option>FIO</option><option>CITEC</option></select>
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Puntos a Deducir</label>
-                                <input type="number" class="admin-form__input" placeholder="Ej: 5">
-                            </div>
-                            <div class="admin-form__grupo admin-form__grupo--full">
-                                <label class="admin-form__label">Motivo de la sanción (Justificación)</label>
-                                <textarea class="admin-form__input" rows="2" placeholder="Describa la actitud antideportiva..."></textarea>
-                            </div>
-                        </div>
-                        <button type="button" class="admin-btn admin-btn--alerta">Aplicar Sanción</button>
-                    </form>
+
+                <h2 class="admin-seccion__titulo">Aplicar Sanción</h2>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Equipo</label>
+                    <select id="sancion-equipo" class="admin-form__input"></select>
                 </div>
-                
-                <div class="admin-seccion">
-                    <h2 class="admin-seccion__titulo">Sanciones Activas</h2>
-                    <div class="admin-lista">
-                        <article class="admin-item">
-                            <div class="admin-item__info">
-                                <h3 class="admin-item__equipos" style="color: var(--color-alert)">-5 Puntos a FIO</h3>
-                                <p class="admin-item__detalles">Motivo: Llegada tardía al evento de Ajedrez.</p>
-                            </div>
-                            <div class="admin-item__acciones">
-    <!-- Botón Editar -->
-    <button class="admin-btn-icono admin-btn-icono--editar" aria-label="Editar">
-        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-        </svg>
-    </button>
-    
-    <!-- Botón Eliminar -->
-    <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
-        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
-        </svg>
-    </button>
-</div>
-                        </article>
-                    </div>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Puntos descontados (negativo)</label>
+                    <input type="number" id="sancion-puntos" class="admin-form__input" placeholder="Ej: -5" max="-1">
+                </div>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Motivo</label>
+                    <input type="text" id="sancion-motivo" class="admin-form__input" placeholder="Ej: Conducta antideportiva">
+                </div>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Observaciones (opcional)</label>
+                    <input type="text" id="sancion-observaciones" class="admin-form__input" placeholder="Ej: Integrante 2 FTL V">
+                </div>
+                <button type="button" id="btn-crear-sancion" class="admin-btn admin-btn--primario">Aplicar Sanción</button>
+
+                <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Sanciones Activas</h2>
+                <div class="admin-tabla-scroll">
+                    <table class="admin-form__tabla">
+                        <thead><tr><th>#</th><th>Equipo</th><th>Facultad</th><th>Deporte</th><th>Pts</th><th>Motivo</th><th>Observaciones</th><th>Fecha</th><th></th></tr></thead>
+                        <tbody id="sanciones-tbody"></tbody>
+                    </table>
                 </div>
             </section>
 
@@ -230,55 +211,92 @@
                 <header class="admin-panel__cabecera">
                     <h1 class="admin-panel__titulo">Facultades y Equipos</h1>
                 </header>
-                
-                <div class="admin-seccion">
-                    <h2 class="admin-seccion__titulo">Registrar Facultad</h2>
-                    <form class="admin-form">
-                        <div class="admin-form__grid">
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Nombre de la Facultad</label>
-                                <input type="text" class="admin-form__input" placeholder="Ej: Facultad de Tecnologías...">
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Siglas</label>
-                                <input type="text" class="admin-form__input" placeholder="Ej: FTI">
-                            </div>
-                        </div>
-                        <button type="button" class="admin-btn admin-btn--primario">Inscribir Facultad</button>
-                    </form>
+
+                <!-- Botones de vista -->
+                <div class="admin-vista-botones">
+                    <button type="button" id="btn-vista-facultades" class="admin-btn admin-btn--primario admin-vista-btn activo" data-vista="facultades">Facultades</button>
+                    <button type="button" id="btn-vista-equipos" class="admin-btn admin-vista-btn" data-vista="equipos">Equipos</button>
                 </div>
-                
-                <div class="admin-seccion">
-                    <h2 class="admin-seccion__titulo">Facultades Inscritas</h2>
-                    <div class="admin-lista">
-                        <article class="admin-item">
-                            <div class="admin-item__info">
-                                <div class="admin-item__encabezado">
-                                    <span class="admin-item__deporte">FTI</span>
-                                </div>
-                                <h3 class="admin-item__equipos">Facultad de Tecnologías Interactivas</h3>
-                                <p class="admin-item__detalles">Equipos inscritos: 8</p>
-                            </div>
-                            <div class="admin-item__acciones">
-    <!-- Botón Editar -->
-    <button class="admin-btn-icono admin-btn-icono--editar" aria-label="Editar">
-        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-        </svg>
-    </button>
-    
-    <!-- Botón Eliminar -->
-    <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
-        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
-        </svg>
-    </button>
-</div>
-                        </article>
+
+                <!-- Vista Facultades -->
+                <div id="vista-facultades" class="admin-vista">
+                    <h2 class="admin-seccion__titulo">Registrar Facultad</h2>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Nombre</label>
+                        <input type="text" id="facultad-nombre" class="admin-form__input" placeholder="Ej: Facultad de Tecnologías...">
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">URL del logo (opcional)</label>
+                        <input type="text" id="facultad-logo" class="admin-form__input" placeholder="Ej: /img/FTL.jpeg">
+                    </div>
+                    <button type="button" id="btn-crear-facultad" class="admin-btn admin-btn--primario">Registrar Facultad</button>
+
+                    <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Facultades Inscritas</h2>
+                    <div class="admin-tabla-scroll">
+                        <table class="admin-form__tabla">
+                            <thead><tr><th>#</th><th>Nombre</th><th>Equipos</th><th></th></tr></thead>
+                            <tbody id="facultades-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vista Equipos -->
+                <div id="vista-equipos" class="admin-vista" style="display:none;">
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Filtrar por facultad</label>
+                        <select id="filtro-facultad-equipos" class="admin-form__input">
+                            <option value="">Todas las facultades</option>
+                        </select>
+                    </div>
+
+                    <h2 class="admin-seccion__titulo">Registrar Equipo</h2>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Facultad</label>
+                        <select id="equipo-facultad" class="admin-form__input"></select>
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Deporte</label>
+                        <select id="equipo-deporte" class="admin-form__input"></select>
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Nombre del equipo</label>
+                        <input type="text" id="equipo-nombre" class="admin-form__input" placeholder="Ej: FTL Baloncesto">
+                    </div>
+                    <button type="button" id="btn-crear-equipo" class="admin-btn admin-btn--primario">Registrar Equipo</button>
+
+                    <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Equipos Registrados</h2>
+                    <div class="admin-tabla-scroll">
+                        <table class="admin-form__tabla">
+                            <thead><tr><th>#</th><th>Equipo</th><th>Facultad</th><th>Deporte</th><th>Eventos</th><th></th><th></th></tr></thead>
+                            <tbody id="equipos-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vista Integrantes (sub-vista de Equipos) -->
+                <div id="vista-integrantes" class="admin-vista" style="display:none;">
+                    <button type="button" id="btn-volver-equipos" class="admin-btn admin-vista-btn" style="margin-bottom:1rem;">Volver a equipos</button>
+                    <h2 class="admin-seccion__titulo" id="integrantes-equipo-titulo">Integrantes</h2>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Nombre</label>
+                        <input type="text" id="integrante-nombre" class="admin-form__input" placeholder="Nombre completo">
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">CI</label>
+                        <input type="text" id="integrante-ci" class="admin-form__input" placeholder="Carnet de identidad">
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Matrícula</label>
+                        <input type="text" id="integrante-matricula" class="admin-form__input" placeholder="Matrícula">
+                    </div>
+                    <button type="button" id="btn-crear-integrante" class="admin-btn admin-btn--primario">Registrar Integrante</button>
+
+                    <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Integrantes Registrados</h2>
+                    <div class="admin-tabla-scroll">
+                        <table class="admin-form__tabla">
+                            <thead><tr><th>#</th><th>Nombre</th><th>CI</th><th>Matrícula</th><th></th></tr></thead>
+                            <tbody id="integrantes-tbody"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -287,80 +305,25 @@
             <section id="disciplinas" class="admin-tab">
                 <header class="admin-panel__cabecera">
                     <h1 class="admin-panel__titulo">Gestión de Disciplinas</h1>
-                    <button class="admin-btn admin-btn--exportar">Exportar Listado</button>
                 </header>
 
                 <div class="admin-seccion">
                     <h2 class="admin-seccion__titulo">Crear Nueva Disciplina</h2>
-                    <form class="admin-form">
-                        <div class="admin-form__grid">
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Deporte</label>
-                                <select class="admin-form__input">
-                                    <option>Fútbol</option>
-                                    <option>Volleyball</option>
-                                    <option>Béisbol</option>
-                                    <option>Ajedrez</option>
-                                    <option>Atletismo</option>
-                                    <option>Baloncesto</option>
-                                </select>
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Nombre</label>
-                                <input type="text" class="admin-form__input" placeholder="Ej: Fútbol Masculino">
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Sexo</label>
-                                <select class="admin-form__input">
-                                    <option>MASCULINO</option>
-                                    <option>FEMENINO</option>
-                                    <option>MIXTO</option>
-                                </select>
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Tipo de Participación</label>
-                                <select class="admin-form__input">
-                                    <option>INDIVIDUAL</option>
-                                    <option>EQUIPO</option>
-                                </select>
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Capacidad Máxima</label>
-                                <input type="number" class="admin-form__input" placeholder="Ej: 16" min="1">
-                            </div>
-                            <div class="admin-form__grupo admin-form__grupo--full">
-                                <label class="admin-form__label">Descripción</label>
-                                <textarea class="admin-form__input" rows="2" placeholder="Descripción opcional..."></textarea>
-                            </div>
-                        </div>
-                        <button type="button" class="admin-btn admin-btn--primario">Crear Disciplina</button>
-                    </form>
+                    <div class="admin-form__grupo" style="max-width:400px;">
+                        <label class="admin-form__label">Nombre del deporte</label>
+                        <input type="text" id="disciplina-nombre" class="admin-form__input" placeholder="Ej: Baloncesto">
+                    </div>
+                    <button type="button" id="btn-crear-disciplina" class="admin-btn admin-btn--primario">Crear Disciplina</button>
                 </div>
 
                 <div class="admin-seccion">
                     <h2 class="admin-seccion__titulo">Disciplinas Registradas</h2>
-                    <div class="admin-lista">
-                        <article class="admin-item">
-                            <div class="admin-item__info">
-                                <div class="admin-item__encabezado">
-                                    <span class="admin-item__deporte">Fútbol</span>
-                                    <span class="admin-item__estado admin-item__estado--pendiente">Activa</span>
-                                </div>
-                                <h3 class="admin-item__equipos">Fútbol Masculino</h3>
-                                <p class="admin-item__detalles">MASCULINO • EQUIPO • Capacidad: 16</p>
-                            </div>
-                            <div class="admin-item__acciones">
-                                <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
-                                    <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                        </article>
-                    </div>
+                    <table class="admin-form__tabla">
+                        <thead>
+                            <tr><th>#</th><th>Nombre</th><th>Equipos asociados</th><th></th></tr>
+                        </thead>
+                        <tbody id="disciplinas-tbody"></tbody>
+                    </table>
                 </div>
             </section>
 
