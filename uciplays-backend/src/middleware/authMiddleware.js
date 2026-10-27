@@ -1,5 +1,10 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'uciplays-secret-cambiar-en-produccion';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    console.error('❌ FATAL: JWT_SECRET no definido en .env. El backend no puede arrancar sin secreto.');
+    process.exit(1);
+}
 
 function verificarToken(req, res, next) {
     const authHeader = req.headers.authorization || '';
