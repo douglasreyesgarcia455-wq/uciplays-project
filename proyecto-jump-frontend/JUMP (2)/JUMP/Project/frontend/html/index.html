@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/css/inicio.css">
-    <script src="/backend/js/fecha.js" defer></script>
-    <script src="/backend/js/formulario.js" defer></script>
+    <link rel="stylesheet" href="/jump/frontend/css/inicio.css">
+    <script src="/jump/backend/js/fecha.js" defer></script>
+    <script src="/jump/backend/js/formulario.js" defer></script>
     <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
     <title>JUMP</title>
 </head>
@@ -123,31 +123,28 @@
         <!-- MAIN EVENT -->
         <div class="main__item main__item-mainevent">
             <article class="main-event">
-                
                 <header class="main-event__encabezado">
                     <span class="main-event__etiqueta">Main Event</span>
-                    <span class="main-event__estado main-event__estado--curso">En Curso</span>
+                    <span class="main-event__estado" id="main-event-estado">—</span>
                 </header>
 
-                <h2 class="main-event__titulo">Final de Volleyball</h2>
-                
+                <h2 class="main-event__titulo" id="main-event-titulo">—</h2>
+
                 <div class="main-event__equipos">
                     <div class="main-event__equipo">
-                        <img class="main-event__logo" src="/assets/logos/fei-logo.png" alt="Logo FEI">
-                        <span class="main-event__nombre">FEI</span>
+                        <img class="main-event__logo" id="main-event-logo-1" src="" alt="">
+                        <span class="main-event__nombre" id="main-event-nombre-1">—</span>
                     </div>
-                    
+
                     <span class="main-event__vs">VS</span>
-                    
+
                     <div class="main-event__equipo">
-                        <img class="main-event__logo" src="/assets/logos/fici-logo.png" alt="Logo FICI">
-                        <span class="main-event__nombre">FICI</span>
+                        <img class="main-event__logo" id="main-event-logo-2" src="" alt="">
+                        <span class="main-event__nombre" id="main-event-nombre-2">—</span>
                     </div>
                 </div>
 
-                <div class="main-event__info">
-                    📅 1 de Octubre, 2026 • 🕒 14:00 • 📍 Cancha de Volleyball 3
-                </div>
+                <div class="main-event__info" id="main-event-info">—</div>
             </article>
         </div>
 
@@ -158,55 +155,7 @@
                     <h2 class="mini-ranking__titulo">Ranking</h2>
                 </header>
                 
-                <ol class="mini-ranking__lista">
-                    
-                    <li class="mini-ranking__item mini-ranking__item--primero">
-                        <span class="mini-ranking__posicion">1</span>
-                        <img class="mini-ranking__logo" src="/assets/logos/fei-logo.png" alt="Logo FEI">
-                        <span class="mini-ranking__nombre">FEI</span>
-                        <span class="mini-ranking__puntos">77</span>
-                    </li>
-                    
-                    
-                    <li class="mini-ranking__item">
-                        <span class="mini-ranking__posicion">2</span>
-                        <img class="mini-ranking__logo" src="/assets/logos/fte-logo.png" alt="Logo FTE">
-                        <span class="mini-ranking__nombre">FTE</span>
-                        <span class="mini-ranking__puntos">40</span>
-                    </li>
-
-                    
-                    <li class="mini-ranking__item">
-                        <span class="mini-ranking__posicion">3</span>
-                        <img class="mini-ranking__logo" src="/assets/logos/fici-logo.png" alt="Logo FICI">
-                        <span class="mini-ranking__nombre">FICI</span>
-                        <span class="mini-ranking__puntos">22</span>
-                    </li>
-
-                    
-                    <li class="mini-ranking__item">
-                        <span class="mini-ranking__posicion">4</span>
-                        <img class="mini-ranking__logo" src="/assets/logos/citi-logo.png" alt="Logo CITI">
-                        <span class="mini-ranking__nombre">CITI</span>
-                        <span class="mini-ranking__puntos">16</span>
-                    </li>
-
-                    
-                    <li class="mini-ranking__item">
-                        <span class="mini-ranking__posicion">5</span>
-                        <img class="mini-ranking__logo" src="/assets/logos/fce-logo.png" alt="Logo FCE">
-                        <span class="mini-ranking__nombre">FCE</span>
-                        <span class="mini-ranking__puntos">6</span>
-                    </li>
-
-                    
-                    <li class="mini-ranking__item">
-                        <span class="mini-ranking__posicion">6</span>
-                        <img class="mini-ranking__logo" src="/assets/logos/fti-logo.png" alt="Logo FTI">
-                        <span class="mini-ranking__nombre">FTI</span>
-                        <span class="mini-ranking__puntos">1</span>
-                    </li>
-                </ol>
+                <ol class="mini-ranking__lista" id="mini-ranking-lista"></ol>
 
                 <footer class="mini-ranking__pie">
                     <a class="mini-ranking__enlace" href="ranking.html">Ver tabla completa</a>
@@ -214,65 +163,15 @@
             </section>
         </div>
 
-        <!-- EVENTO PRÓXIMO 1 -->
-        <div class="main__item main__item-bottom-izq">
-            <a href="cartelera.html?fecha=2026-10-02" class="tarjeta-evento">
-                <header class="tarjeta-evento__cabecera">
-                    <span class="tarjeta-evento__deporte">Fútbol</span>
-                    <span class="tarjeta-evento__estado tarjeta-evento__estado--curso" title="En curso"></span>
-                </header>
-                
-                <div class="tarjeta-evento__cuerpo">
-                    <img class="tarjeta-evento__logo" src="/assets/logos/fte-logo.png" alt="Logo FTE">
-                    <span class="tarjeta-evento__vs">VS</span>
-                    <img class="tarjeta-evento__logo" src="/assets/logos/fce-logo.png" alt="Logo FCE">
-                </div>
-                
-                <footer class="tarjeta-evento__pie">
-                    <span class="tarjeta-evento__fecha">📅 2 Oct • 10:00</span>
-                </footer>
-            </a>
-        </div>
+        <!-- TARJETA EVENTO 1 -->
+        <div class="main__item main__item-bottom-izq" id="tarjeta-evento-1"></div>
 
-        <!-- EVENTO PRÓXIMO 2 -->
-        <div class="main__item main__item-bottom-cen">
-            <a href="cartelera.html?fecha=2026-10-02" class="tarjeta-evento">
-                <header class="tarjeta-evento__cabecera">
-                    <span class="tarjeta-evento__deporte">Béisbol</span>
-                    <span class="tarjeta-evento__estado tarjeta-evento__estado--programado" title="Programado"></span>
-                </header>
-                
-                <div class="tarjeta-evento__cuerpo">
-                    <img class="tarjeta-evento__logo" src="/assets/logos/citi-logo.png" alt="Logo CITI">
-                    <span class="tarjeta-evento__vs">VS</span>
-                    <img class="tarjeta-evento__logo" src="/assets/logos/fti-logo.png" alt="Logo FTI">
-                </div>
-                
-                <footer class="tarjeta-evento__pie">
-                    <span class="tarjeta-evento__fecha">📅 2 Oct • 14:00</span>
-                </footer>
-            </a>
-        </div>
+        <!-- TARJETA EVENTO 2 -->
+        <div class="main__item main__item-bottom-cen" id="tarjeta-evento-2"></div>
 
-        <!-- EVENTO PRÓXIMO 3 -->
-        <div class="main__item main__item-bottom-der">
-            <a href="cartelera.html?fecha=2026-11-05" class="tarjeta-evento">
-                <header class="tarjeta-evento__cabecera">
-                    <span class="tarjeta-evento__deporte">Ajedrez</span>
-                    <span class="tarjeta-evento__estado tarjeta-evento__estado--programado" title="Programado"></span>
-                </header>
-                
-                <div class="tarjeta-evento__cuerpo">
-                    <img class="tarjeta-evento__logo" src="/assets/logos/fici-logo.png" alt="Logo FICI">
-                    <span class="tarjeta-evento__vs">VS</span>
-                    <img class="tarjeta-evento__logo" src="/assets/logos/citi-logo.png" alt="Logo CITI">
-                </div>
-                
-                <footer class="tarjeta-evento__pie">
-                    <span class="tarjeta-evento__fecha">📅 5 Nov • 09:00</span>
-                </footer>
-            </a>
-        </div>
+        <!-- TARJETA EVENTO 3 -->
+        <div class="main__item main__item-bottom-der" id="tarjeta-evento-3"></div>
+    
     </main>
 
     <!-- FOOTER -->
@@ -319,10 +218,19 @@
                 <input type="password" id="admin-pass" class="modal-admin__input" required placeholder="Ingresa tu contraseña">
             </div>
             
+            <div class="modal-admin__error" id="login-error" style="display:none;"></div>
             <button type="submit" class="modal-admin__btn-submit">Ingresar</button>
         </form>
     </div>
 </div>
     
+
+    <script src="/jump/frontend/js/api-client.js" defer></script>
+    <script src="/jump/frontend/js/auth.api.js" defer></script>
+    <script src="/jump/frontend/js/admin-login.js" defer></script>
+    <script src="/jump/frontend/js/eventos.api.js" defer></script>
+    <script src="/jump/frontend/js/ranking.api.js" defer></script>
+    <script src="/jump/frontend/js/facultades.api.js" defer></script>
+    <script src="/jump/frontend/js/index.controller.js" defer></script>
 </body>
 </html>

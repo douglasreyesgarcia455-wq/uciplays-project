@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/jump/frontend/css/inicio.css">
+    <link rel="stylesheet" href="/jump/frontend/css/admin.css">
+    <script src="/jump/frontend/js/api-client.js" defer></script>
+    <script src="/jump/frontend/js/auth.api.js" defer></script>
+    <script src="/jump/frontend/js/eventos.api.js" defer></script>
+    <script src="/jump/frontend/js/ranking.api.js" defer></script>
+    <script src="/jump/frontend/js/sanciones.api.js" defer></script>
+    <script src="/jump/frontend/js/facultades.api.js" defer></script>
+    <script src="/jump/frontend/js/deportes.api.js" defer></script>
+    <script src="/jump/frontend/js/equipos.api.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="/jump/frontend/js/admin.toast.js" defer></script>
+    <script src="/jump/frontend/js/admin.paginado.js" defer></script>
+    <script src="/jump/frontend/js/admin.validacion.js" defer></script>
+    <script src="/jump/frontend/js/admin.tabs.js" defer></script>
+    <script src="/jump/frontend/js/admin.eventos.participantes.js" defer></script>
+    <script src="/jump/frontend/js/admin.eventos.js" defer></script>
+    <script src="/jump/frontend/js/admin.eventos.export.js" defer></script>
+    <script src="/jump/frontend/js/admin.resultados.js" defer></script>
+    <script src="/jump/frontend/js/admin.disciplinas.js" defer></script>
+    <script src="/jump/frontend/js/admin.participantes.facultades.js" defer></script>
+    <script src="/jump/frontend/js/admin.participantes.equipos.js" defer></script>
+    <script src="/jump/frontend/js/admin.participantes.integrantes.js" defer></script>
+    <script src="/jump/frontend/js/admin.participantes.js" defer></script>
+    <script src="/jump/frontend/js/admin.sanciones.js" defer></script>
+    <script src="/jump/frontend/js/admin.sistema.js" defer></script>
+    <script src="/jump/frontend/js/admin.confirm.js" defer></script>
+    <script src="/jump/frontend/js/admin.prompt.js" defer></script>
+    <script src="/jump/frontend/js/admin.controller.js" defer></script>
+    <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
+    <title>Panel de Administración - JUMP</title>
+</head>
+<body>
+
+    <!-- HEADER DE ADMINISTRACIÓN -->
+    <header class="header header--admin">
+        <div class="header__container">
+            <a class="header__brand" href="index.html" aria-label="JUMP, ir al inicio">
+                <img class="header__logo" src="/assets/Logo/JUMP_logo claro.png" alt="Logo JUMP">
+            </a>
+
+            <nav class="header__nav" aria-label="Navegación de administración">
+                <ul class="header__nav-list">
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin active" href="#eventos" data-target="eventos">Eventos</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#resultados" data-target="resultados">Resultados</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#sanciones" data-target="sanciones">Sanciones</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#participantes" data-target="participantes">Participantes</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#disciplinas" data-target="disciplinas">Disciplinas</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#sistema" data-target="sistema">Sistema</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <a class="header__admin-link btn-inicio" href="index.html">
+                <span class="header__admin-label">Inicio</span>
+                <span class="header__admin-icon icon-inicio" aria-hidden="true">
+                    <svg class="header__admin-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                </span>
+            </a>
+        </div>
+    </header>
+
+    <main class="main admin-main">
+        <div class="admin-panel">
+
+            <!-- PESTAÑA 1: EVENTOS -->
+            <section id="eventos" class="admin-tab active-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Gestión de Eventos</h1>
+                    <button type="button" id="btn-export-pdf" class="admin-btn admin-btn--exportar">Exportar PDF</button>
+                </header>
+                
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Programar Nuevo Encuentro</h2>
+                    <form class="admin-form">
+                        <div class="admin-form__grid">
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Deporte</label>
+                                <select id="evento-deporte" class="admin-form__input"></select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Fecha</label>
+                                <input type="date" id="evento-fecha" class="admin-form__input">
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Hora</label>
+                                <input type="time" id="evento-hora" class="admin-form__input">
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Lugar</label>
+                                <input type="text" id="evento-lugar" class="admin-form__input" placeholder="Ej: Cancha Principal">
+                            </div>
+                        </div>
+
+                        <h3 class="admin-seccion__subtitulo" style="margin-top:1rem;">Participantes</h3>
+                        <table class="admin-form__tabla" id="evento-participantes-tabla">
+                            <thead>
+                                <tr><th>Equipo</th><th></th></tr>
+                            </thead>
+                            <tbody id="evento-participantes-tbody"></tbody>
+                        </table>
+                        <button type="button" id="btn-agregar-participante" class="admin-btn" style="margin-top:0.5rem;">+ Agregar equipo</button>
+                        <button type="button" id="btn-crear-evento" class="admin-btn admin-btn--primario">Lanzar a Cartelera</button>
+                    </form>
+                </div>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Encuentros Registrados</h2>
+                    <div class="admin-lista" id="eventos-lista"></div>
+                    <div id="eventos-paginado" class="admin-paginado" style="margin-top:1rem; display:flex; gap:1rem; align-items:center;">
+                        <label>Tamaño:
+                            <select id="eventos-tamano-pagina" class="admin-form__input" style="width:auto; display:inline-block;">
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </label>
+                        <button id="eventos-prev" class="admin-btn">Anterior</button>
+                        <span id="eventos-info-pagina">1 / 1</span>
+                        <button id="eventos-next" class="admin-btn">Siguiente</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 2: MEDALLAS -->
+            <section id="resultados" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Resultados</h1>
+                    <button type="button" id="btn-actualizar-resultados" class="admin-btn">Actualizar</button>
+                </header>
+
+                <div class="admin-resultados-grid">
+                    <!-- Columna izquierda: definir resultado -->
+                    <div class="admin-resultados-form">
+                        <h2 class="admin-seccion__titulo">Definir Resultado</h2>
+                        <div class="admin-form__grupo">
+                            <label class="admin-form__label">Evento en curso</label>
+                            <select id="resultado-evento" class="admin-form__input">
+                                <option value="">— Selecciona un evento —</option>
+                            </select>
+                        </div>
+                        <div id="resultado-participantes-tabla" style="display:none; margin-top:1rem;">
+                            <table class="admin-form__tabla">
+                                <thead>
+                                    <tr><th>Equipo</th><th>Posición</th><th>Puntos</th></tr>
+                                </thead>
+                                <tbody id="resultado-participantes-tbody"></tbody>
+                            </table>
+                            <button type="button" id="btn-guardar-resultado" class="admin-btn admin-btn--primario" style="margin-top:1rem;">Guardar Resultado</button>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha: medallero -->
+                    <div class="admin-resultados-medallero">
+                        <h2 class="admin-seccion__titulo">Medallero por Facultad</h2>
+                        <table class="admin-form__tabla admin-form__tabla--compacta">
+                            <thead>
+                                <tr><th>#</th><th>Facultad</th><th>Pts. Eventos</th><th>Pts. Sanciones</th><th>Total</th></tr>
+                            </thead>
+                            <tbody id="medallero-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 3: SANCIONES -->
+            <section id="sanciones" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Sanciones</h1>
+                </header>
+
+                <h2 class="admin-seccion__titulo">Aplicar Sanción</h2>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Equipo</label>
+                    <select id="sancion-equipo" class="admin-form__input"></select>
+                </div>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Puntos descontados (negativo)</label>
+                    <input type="number" id="sancion-puntos" class="admin-form__input" placeholder="Ej: -5" max="-1">
+                </div>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Motivo</label>
+                    <input type="text" id="sancion-motivo" class="admin-form__input" placeholder="Ej: Conducta antideportiva">
+                </div>
+                <div class="admin-form__grupo">
+                    <label class="admin-form__label">Observaciones (opcional)</label>
+                    <input type="text" id="sancion-observaciones" class="admin-form__input" placeholder="Ej: Integrante 2 FTL V">
+                </div>
+                <button type="button" id="btn-crear-sancion" class="admin-btn admin-btn--primario">Aplicar Sanción</button>
+
+                <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Sanciones Activas</h2>
+                <div class="admin-tabla-scroll">
+                    <table class="admin-form__tabla">
+                        <thead><tr><th>#</th><th>Equipo</th><th>Facultad</th><th>Deporte</th><th>Pts</th><th>Motivo</th><th>Observaciones</th><th>Fecha</th><th></th></tr></thead>
+                        <tbody id="sanciones-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 4: PARTICIPANTES -->
+            <section id="participantes" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Facultades y Equipos</h1>
+                </header>
+
+                <!-- Botones de vista -->
+                <div class="admin-vista-botones">
+                    <button type="button" id="btn-vista-facultades" class="admin-btn admin-btn--primario admin-vista-btn activo" data-vista="facultades">Facultades</button>
+                    <button type="button" id="btn-vista-equipos" class="admin-btn admin-vista-btn" data-vista="equipos">Equipos</button>
+                </div>
+
+                <!-- Vista Facultades -->
+                <div id="vista-facultades" class="admin-vista">
+                    <h2 class="admin-seccion__titulo">Registrar Facultad</h2>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Nombre</label>
+                        <input type="text" id="facultad-nombre" class="admin-form__input" placeholder="Ej: Facultad de Tecnologías...">
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">URL del logo (opcional)</label>
+                        <input type="text" id="facultad-logo" class="admin-form__input" placeholder="Ej: /img/FTL.jpeg">
+                    </div>
+                    <button type="button" id="btn-crear-facultad" class="admin-btn admin-btn--primario">Registrar Facultad</button>
+
+                    <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Facultades Inscritas</h2>
+                    <div class="admin-tabla-scroll">
+                        <table class="admin-form__tabla">
+                            <thead><tr><th>#</th><th>Nombre</th><th>Equipos</th><th></th></tr></thead>
+                            <tbody id="facultades-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vista Equipos -->
+                <div id="vista-equipos" class="admin-vista" style="display:none;">
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Filtrar por facultad</label>
+                        <select id="filtro-facultad-equipos" class="admin-form__input">
+                            <option value="">Todas las facultades</option>
+                        </select>
+                    </div>
+
+                    <h2 class="admin-seccion__titulo">Registrar Equipo</h2>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Facultad</label>
+                        <select id="equipo-facultad" class="admin-form__input"></select>
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Deporte</label>
+                        <select id="equipo-deporte" class="admin-form__input"></select>
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Nombre del equipo</label>
+                        <input type="text" id="equipo-nombre" class="admin-form__input" placeholder="Ej: FTL Baloncesto">
+                    </div>
+                    <button type="button" id="btn-crear-equipo" class="admin-btn admin-btn--primario">Registrar Equipo</button>
+
+                    <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Equipos Registrados</h2>
+                    <div class="admin-tabla-scroll">
+                        <table class="admin-form__tabla">
+                            <thead><tr><th>#</th><th>Equipo</th><th>Facultad</th><th>Deporte</th><th>Eventos</th><th></th><th></th></tr></thead>
+                            <tbody id="equipos-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vista Integrantes (sub-vista de Equipos) -->
+                <div id="vista-integrantes" class="admin-vista" style="display:none;">
+                    <button type="button" id="btn-volver-equipos" class="admin-btn admin-vista-btn" style="margin-bottom:1rem;">Volver a equipos</button>
+                    <h2 class="admin-seccion__titulo" id="integrantes-equipo-titulo">Integrantes</h2>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Nombre</label>
+                        <input type="text" id="integrante-nombre" class="admin-form__input" placeholder="Nombre completo">
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">CI</label>
+                        <input type="text" id="integrante-ci" class="admin-form__input" placeholder="Carnet de identidad">
+                    </div>
+                    <div class="admin-form__grupo">
+                        <label class="admin-form__label">Matrícula</label>
+                        <input type="text" id="integrante-matricula" class="admin-form__input" placeholder="Matrícula">
+                    </div>
+                    <button type="button" id="btn-crear-integrante" class="admin-btn admin-btn--primario">Registrar Integrante</button>
+
+                    <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Integrantes Registrados</h2>
+                    <div class="admin-tabla-scroll">
+                        <table class="admin-form__tabla">
+                            <thead><tr><th>#</th><th>Nombre</th><th>CI</th><th>Matrícula</th><th></th></tr></thead>
+                            <tbody id="integrantes-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 5: DISCIPLINAS -->
+            <section id="disciplinas" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Gestión de Disciplinas</h1>
+                </header>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Crear Nueva Disciplina</h2>
+                    <div class="admin-form__grupo" style="max-width:400px;">
+                        <label class="admin-form__label">Nombre del deporte</label>
+                        <input type="text" id="disciplina-nombre" class="admin-form__input" placeholder="Ej: Baloncesto">
+                    </div>
+                    <button type="button" id="btn-crear-disciplina" class="admin-btn admin-btn--primario">Crear Disciplina</button>
+                </div>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Disciplinas Registradas</h2>
+                    <table class="admin-form__tabla">
+                        <thead>
+                            <tr><th>#</th><th>Nombre</th><th>Equipos asociados</th><th></th></tr>
+                        </thead>
+                        <tbody id="disciplinas-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+
+
+            <!-- PESTAÑA 6: SISTEMA -->
+            <section id="sistema" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Sistema</h1>
+                </header>
+
+                <h2 class="admin-seccion__titulo">Copia de Seguridad</h2>
+                <p style="margin-bottom:1rem; color:#65647A;">Descarga el archivo <code>database.sqlite</code> completo.</p>
+                <button type="button" id="btn-backup" class="admin-btn admin-btn--primario">Descargar copia de seguridad</button>
+
+                <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Auditoría de Acciones</h2>
+                <div class="admin-tabla-scroll">
+                    <table class="admin-form__tabla">
+                        <thead>
+                            <tr><th>#</th><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>ID</th><th>IP</th></tr>
+                        </thead>
+                        <tbody id="auditoria-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            
+            <!-- Espacio para Logo Izquierdo (Logo principal) -->
+            <a class="footer__brand footer__brand--izq" href="index.html" aria-label="Ir al inicio">
+                <img class="footer__logo" src="/assets/Logo/JUMP_logo claro.png" alt="Logo JUMP">
+            </a>
+
+            <!-- Enlaces Centrales -->
+            <nav class="footer__nav" aria-label="Navegación del pie de página">
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="index.html">Inicio</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="ranking.html">Ranking</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="cartelera.html">Cartelera</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="estadisticas.html">Estadísticas</a></li>
+                </ul>
+            </nav>
+
+            <!-- Espacio para Logo Derecho (Universidad, facultad, patrocinador, etc.) -->
+            <a class="footer__brand footer__brand--der" href="index.html" aria-label="Ir al inicio">
+                <img class="footer__logo" src="/assets/Logo/Logo Uci Blanco .png" alt="Logo UCI">
+            </a>
+
+        </div>
+    </footer>
+
+
+<!-- MODAL DE LOGIN -->
+<div id="login-modal" class="login-modal" style="display:none;">
+    <div class="login-modal__contenido">
+        <h2 class="login-modal__titulo">Iniciar sesión</h2>
+        <form id="login-form">
+            <div class="admin-form__grupo">
+                <label class="admin-form__label">Usuario</label>
+                <input type="text" id="login-username" class="admin-form__input" required>
+            </div>
+            <div class="admin-form__grupo">
+                <label class="admin-form__label">Contraseña</label>
+                <input type="password" id="login-password" class="admin-form__input" required>
+            </div>
+            <div id="login-error" class="login-modal__error" style="display:none;"></div>
+            <button type="submit" class="admin-btn admin-btn--primario" style="width:100%;">Entrar</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- CONTENEDOR DE TOASTS -->
+<div class="toast-container" id="toast-container"></div>
+
+
+<!-- MODAL DE CONFIRMACIÓN GENÉRICO -->
+<div id="confirm-modal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal__contenido">
+        <h2 class="confirm-modal__titulo" id="confirm-titulo">¿Confirmar acción?</h2>
+        <p class="confirm-modal__mensaje" id="confirm-mensaje">—</p>
+        <div class="confirm-modal__botones">
+            <button type="button" id="confirm-cancelar" class="admin-btn">Cancelar</button>
+            <button type="button" id="confirm-aceptar" class="admin-btn admin-btn--primario">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL DE PROMPT GENÉRICO (reemplaza prompt() nativo) -->
+<div id="prompt-modal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal__contenido">
+        <h2 class="confirm-modal__titulo" id="prompt-titulo">Editar</h2>
+        <div id="prompt-campos"></div>
+        <div id="prompt-error" class="admin-form__error-msg" style="display:none; margin-bottom:0.5rem;"></div>
+        <div class="confirm-modal__botones">
+            <button type="button" id="prompt-cancelar" class="admin-btn">Cancelar</button>
+            <button type="button" id="prompt-aceptar" class="admin-btn admin-btn--primario">Guardar</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

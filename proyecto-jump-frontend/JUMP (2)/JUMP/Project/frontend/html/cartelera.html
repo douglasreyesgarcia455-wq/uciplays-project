@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/css/inicio.css">
-    <link rel="stylesheet" href="/frontend/css/cartelera.css">
-    <script src="/backend/js/cartelera.js" defer></script>
-    <script src="/backend/js/formulario.js" defer></script>
+    <link rel="stylesheet" href="/jump/frontend/css/inicio.css">
+    <link rel="stylesheet" href="/jump/frontend/css/cartelera.css">
+    <script src="/jump/backend/js/cartelera.js" defer></script>
+    <script src="/jump/backend/js/formulario.js" defer></script>
     <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
     <title>Cartelera - JUMP</title>
 </head>
@@ -132,11 +132,17 @@
                 <input type="password" id="admin-pass" class="modal-admin__input" required placeholder="Ingresa tu contraseña">
             </div>
             
+            <div class="modal-admin__error" id="login-error" style="display:none;"></div>
             <button type="submit" class="modal-admin__btn-submit">Ingresar</button>
         </form>
     </div>
 </div>
 
 
+<script src="/jump/frontend/js/api-client.js" defer></script>
+<script src="/jump/frontend/js/auth.api.js" defer></script>
+<script src="/jump/frontend/js/admin-login.js" defer></script>
+<script src="/jump/frontend/js/eventos.api.js" defer></script>
+<script src="/jump/frontend/js/cartelera.controller.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,519 @@
+/* =========================================
+   CABECERA ADMINISTRADOR
+========================================= */
+.header--admin {
+    background-color: #121281;
+    border-bottom: none;
+    box-shadow: 0 4px 12px rgba(18, 18, 129, 0.3);
+}
+
+.header--admin .header__logo {
+    height: 2.3rem; 
+    width: auto; 
+}
+
+.header--admin .header__nav-link--admin {
+    color: #FFFFFF;
+}
+
+.header--admin .header__nav-link--admin::before {
+    background-color: #FFFFFF;
+}
+
+.header--admin .header__nav-link--admin.active,
+.header--admin .header__nav-link--admin:hover,
+.header--admin .header__nav-link--admin:focus-visible {
+    color: #121281;
+}
+
+.header--admin .header__nav-link--admin.active::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.btn-inicio {
+    background-color: #FFFFFF;
+    color: #121281;
+    box-shadow: inset 0 0 1.6em -0.6em rgba(18, 18, 129, 0.2);
+}
+
+.icon-inicio {
+    background-color: #121281;
+    color: #FFFFFF;
+}
+
+/* =========================================
+   ESTRUCTURA DEL PANEL Y PESTAÑAS
+========================================= */
+.admin-main {
+    padding-top: 6rem;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 3rem;
+}
+
+.admin-panel {
+    width: 100%;
+    max-width: 65rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ocultar todas las secciones por defecto */
+.admin-tab {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+/* Mostrar solo la sección activa */
+.admin-tab.active-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-panel__cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 1rem;
+}
+
+.admin-panel__titulo {
+    color: #121281;
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.admin-seccion {
+    background-color: var(--color-surface);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 0.35rem 1rem rgb(28 27 46 / 8%);
+}
+
+.admin-seccion--alerta {
+    border-top: 4px solid var(--color-alert);
+}
+
+.admin-seccion__titulo {
+    color: var(--color-text-primary);
+    font-size: 1.3rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+/* =========================================
+   FORMULARIOS
+========================================= */
+.admin-form__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-form__grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-form__grupo--full {
+    grid-column: 1 / -1;
+}
+
+.admin-form__label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+}
+
+.admin-form__input {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.6rem;
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-form__input:focus {
+    outline: none;
+    border-color: #121281;
+    box-shadow: 0 0 0 3px rgba(18, 18, 129, 0.15);
+}
+
+.admin-input-destacado {
+    background-color: #FFF0D6;
+    border-color: #865000;
+    font-weight: bold;
+}
+
+/* Botones */
+.admin-btn {
+    border: none;
+    border-radius: 0.6rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 150ms ease, background-color 200ms ease;
+    font-family: inherit;
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+}
+
+.admin-btn--primario {
+    background-color: var(--color-action);
+    color: var(--color-on-action);
+    width: 100%;
+}
+
+.admin-btn--exportar {
+    background-color: var(--color-surface-secondary);
+    color: var(--color-action);
+    border: 1px solid var(--color-action);
+}
+
+.admin-btn--alerta {
+    background-color: var(--color-alert);
+    color: #FFFFFF;
+    width: 100%;
+}
+
+/* =========================================
+   LISTAS Y ACCIONES CRUD
+========================================= */
+.admin-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem;
+    border-radius: 0.8rem;
+    background-color: var(--color-surface-secondary);
+    border: 1px solid transparent;
+    transition: border-color 200ms ease;
+}
+
+.admin-item:hover {
+    border-color: var(--color-border);
+}
+
+.admin-item__encabezado {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+}
+
+.admin-item__deporte {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--color-action);
+}
+
+.admin-item__estado {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    font-weight: 700;
+}
+
+.admin-item__estado--pendiente {
+    background-color: var(--color-pending-bg);
+    color: var(--color-pending);
+}
+
+.admin-item__estado--curso {
+    background-color: var(--color-alert-bg);
+    color: var(--color-alert);
+}
+
+.admin-item__equipos {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--color-text-primary);
+}
+
+.admin-item__detalles {
+    margin: 0.4rem 0 0 0;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.admin-item__acciones {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.admin-btn-icono {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--color-text-secondary); /* Color base gris para el icono */
+    transition: all 150ms ease;
+}
+
+.admin-icono-svg {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.admin-btn-icono:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.admin-btn-icono--editar:hover {
+    border-color: var(--color-action);
+    background-color: var(--color-focus);
+    color: var(--color-action); /* El icono se vuelve azul al hacer hover */
+}
+
+.admin-btn-icono--eliminar:hover {
+    border-color: var(--color-alert);
+    background-color: var(--color-alert-bg);
+    color: var(--color-alert); /* El icono se vuelve rojo al hacer hover */
+}
+/* Error inline del login (modal de administración) */
+.modal-admin__error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    border: 1px solid #f5c6cb;
+}
+.modal-admin__error--visible {
+    display: block !important;
+}
+
+/* Toast de notificaciones (crear/editar/borrar) */
+.toast-container {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.toast {
+    background: #167963;
+    color: #fff;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: 320px;
+}
+.toast--visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+.toast--error {
+    background: #B8324B;
+}
+.toast--info {
+    background: #1a1088;
+}
+
+/* Validación inline de campos */
+.admin-form__input--error {
+    border: 2px solid #B8324B !important;
+    background: #fdf2f4 !important;
+}
+.admin-form__error-msg {
+    color: #B8324B;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Grid del tab Resultados: 2 columnas */
+.admin-resultados-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+@media (max-width: 900px) {
+    .admin-resultados-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tabla compacta del medallero */
+.admin-form__tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.admin-form__tabla th,
+.admin-form__tabla td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+.admin-form__tabla th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+.admin-form__tabla--compacta td,
+.admin-form__tabla--compacta th {
+    padding: 0.3rem 0.5rem;
+}
+
+/* Slider horizontal de participantes (3 vistas) */
+.admin-participantes-slider {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    align-items: flex-start;
+}
+.admin-participantes-vista {
+    flex: 0 0 100%;
+    width: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+}
+.admin-participantes-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: #65647A;
+}
+.admin-btn--link {
+    background: none;
+    border: none;
+    color: #1a1088;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 0.95rem;
+}
+.admin-btn--link:hover {
+    color: #5A4BFF;
+}
+.admin-tabla-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+.admin-tabla-scroll .admin-form__tabla {
+    margin: 0;
+}
+.admin-tabla-scroll .admin-form__tabla thead {
+    position: sticky;
+    top: 0;
+    background: #f5f5f5;
+    z-index: 1;
+}
+
+/* Botones de vista (Facultades / Equipos) */
+.admin-vista-botones {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+.admin-vista-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.admin-vista-btn.activo {
+    background: #1a1088;
+    color: #fff;
+    border-color: #1a1088;
+    transform: scale(1.02);
+    box-shadow: 0 2px 6px rgba(26, 16, 136, 0.3);
+}
+.admin-vista-btn:hover:not(.activo) {
+    background: #e0e0e0;
+}
+.admin-vista {
+    animation: fadeIn 0.2s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Botón pequeño en la lista de eventos */
+.admin-btn--sm {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.85rem;
+}
+
+/* Modal de confirmación genérico */
+.confirm-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.confirm-modal__contenido {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+.confirm-modal__titulo {
+    margin: 0 0 0.8rem;
+    font-size: 1.2rem;
+    color: #1a1088;
+}
+.confirm-modal__mensaje {
+    margin: 0 0 1.5rem;
+    color: #444;
+    line-height: 1.4;
+}
+.confirm-modal__botones {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+}

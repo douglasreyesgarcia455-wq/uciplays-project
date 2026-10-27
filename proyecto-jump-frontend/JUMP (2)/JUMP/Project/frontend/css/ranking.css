@@ -105,3 +105,39 @@
     border-radius: 0.8rem;
     border: 1px solid var(--color-info);
 }
+/* Tabla de ranking: 5 columnas (posición, facultad, pts eventos, pts sanciones, total) */
+.ranking__tabla {
+    width: 100%;
+    table-layout: auto;
+}
+.ranking__tabla th,
+.ranking__tabla td {
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    white-space: nowrap;
+}
+.ranking__tabla th.text-left,
+.ranking__tabla td.text-left {
+    text-align: left;
+}
+.ranking__tabla th:nth-child(1),
+.ranking__tabla td:nth-child(1) {
+    width: 50px;
+}
+.ranking__tabla th:nth-child(2),
+.ranking__tabla td:nth-child(2) {
+    text-align: left;
+    min-width: 150px;
+}
+.ranking__tabla th:nth-child(3),
+.ranking__tabla td:nth-child(3),
+.ranking__tabla th:nth-child(4),
+.ranking__tabla td:nth-child(4),
+.ranking__tabla th:nth-child(5),
+.ranking__tabla td:nth-child(5) {
+    min-width: 100px;
+}
+.ranking__tabla td:nth-child(5) strong {
+    color: #1a1088;
+    font-size: 1.05rem;
+}

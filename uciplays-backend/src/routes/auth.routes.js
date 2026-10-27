@@ -1,16 +1,11 @@
+// auth.routes.js — Router de autenticación. Solo rutas.
 const express = require('express');
 const router = express.Router();
+const controller = require('../controllers/authController');
+const { verificarToken } = require('../middleware/authMiddleware');
 
-// Ruta de login simple
-router.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    
-    // Credenciales fijas para el proyecto
-    if (username === 'admin' && password === 'uci2025') {
-        res.json({ success: true, message: "Autenticación exitosa" });
-    } else {
-        res.status(401).json({ success: false, message: "Usuario o contraseña incorrectos" });
-    }
-});
+router.post('/login', controller.login);
+router.post('/logout', verificarToken, controller.logout);
+router.get('/me', verificarToken, controller.me);
 
 module.exports = router;
