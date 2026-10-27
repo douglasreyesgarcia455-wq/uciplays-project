@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const { verificarToken } = require('../middleware/authMiddleware');
+const { registrarAuditoria } = require('../middleware/auditoriaHelper');
 
 router.get('/', async (req, res) => {
     try {
         const integrantes = await db.query(`
             SELECT i.id, i.nombre, i.ci, i.matricula,
-                   e.nombre AS equipo_nombre,
-                   f.nombre AS facultad_nombre,
-                   d.nombre AS deporte
+                   e.nombre AS equipo_nombre, f.nombre AS facultad_nombre, d.nombre AS deporte, i.equipo_id
             FROM integrantes i
             JOIN equipos e ON e.id = i.equipo_id
             JOIN facultades f ON f.id = e.facultad_id
@@ -26,9 +26,7 @@ router.get('/:equipo_id', async (req, res) => {
     try {
         const integrantes = await db.query(`
             SELECT i.id, i.nombre, i.ci, i.matricula,
-                   e.nombre AS equipo_nombre,
-                   f.nombre AS facultad_nombre,
-                   d.nombre AS deporte
+                   e.nombre AS equipo_nombre, f.nombre AS facultad_nombre, d.nombre AS deporte, i.equipo_id
             FROM integrantes i
             JOIN equipos e ON e.id = i.equipo_id
             JOIN facultades f ON f.id = e.facultad_id
@@ -40,6 +38,46 @@ router.get('/:equipo_id', async (req, res) => {
     } catch (error) {
         console.error('Error GET /integrantes/:equipo_id:', error);
         res.status(500).json({ error: 'Error al obtener integrantes del equipo' });
+    }
+});
+
+router.post('/', verificarToken, async (req, res) => {
+    try {
+        const body = req.body || {};
+        const nombre = String(body.nombre || '').trim();
+        const ci = String(body.ci || '').trim();
+        const matricula = String(body.matricula || '').trim();
+        const equipoId = parseInt(body.equipo_id);
+        if (!nombre || nombre.length < 2) return res.status(400).json({ error: 'Nombre inválido' });
+        if (!ci) return res.status(400).json({ error: 'CI requerido' });
+        if (!matricula) return res.status(400).json({ error: 'Matrícula requerida' });
+        if (!equipoId) return res.status(400).json({ error: 'equipo_id requerido' });
+
+        const existeCI = await db.query('SELECT id FROM integrantes WHERE ci = ?', [ci]);
+        if (existeCI && existeCI.length > 0) return res.status(409).json({ error: 'Ya existe un integrante con esa CI' });
+        const existeMat = await db.query('SELECT id FROM integrantes WHERE matricula = ?', [matricula]);
+        if (existeMat && existeMat.length > 0) return res.status(409).json({ error: 'Ya existe un integrante con esa matrícula' });
+
+        await db.query('INSERT INTO integrantes (nombre, ci, matricula, equipo_id) VALUES (?, ?, ?, ?)',
+            [nombre, ci, matricula, equipoId]);
+        const idRows = await db.query('SELECT last_insert_rowid() AS id');
+        await registrarAuditoria(req, 'crear', 'integrante', idRows[0].id, { nombre, equipoId });
+        res.status(201).json({ message: 'Creado', id: idRows[0].id });
+    } catch (error) {
+        console.error('Error POST /integrantes:', error);
+        res.status(500).json({ error: 'Error al crear integrante' });
+    }
+});
+
+router.delete('/:id', verificarToken, async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        await db.query('DELETE FROM integrantes WHERE id = ?', [id]);
+        await registrarAuditoria(req, 'borrar', 'integrante', id, null);
+        res.json({ message: 'Eliminado' });
+    } catch (error) {
+        console.error('Error DELETE /integrantes/:id:', error);
+        res.status(500).json({ error: 'Error al borrar integrante' });
     }
 });
 

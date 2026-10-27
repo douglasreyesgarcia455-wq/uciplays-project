@@ -16,7 +16,7 @@ function puntosPorPosicion(posicion) {
 router.get('/', async (req, res) => {
     try {
         const { estado } = req.query;
-        let sql = `SELECT ev.id, d.nombre AS deporte, ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles
+        let sql = `SELECT ev.id, ev.deporte_id, d.nombre AS deporte, ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles
                    FROM eventos ev
                    JOIN deportes d ON d.id = ev.deporte_id`;
         const params = [];
@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const rows = await db.query(
-            `SELECT ev.id, d.nombre AS deporte, ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles
+            `SELECT ev.id, ev.deporte_id, d.nombre AS deporte, ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles
              FROM eventos ev JOIN deportes d ON d.id = ev.deporte_id WHERE ev.id = ?`, [req.params.id]
         );
         if (!rows || rows.length === 0) return res.status(404).json({ error: 'Evento no encontrado' });
