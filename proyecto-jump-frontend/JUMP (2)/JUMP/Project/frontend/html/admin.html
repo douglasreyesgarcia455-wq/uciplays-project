@@ -22,6 +22,7 @@
     <script src="/jump/frontend/js/admin.disciplinas.js" defer></script>
     <script src="/jump/frontend/js/admin.participantes.js" defer></script>
     <script src="/jump/frontend/js/admin.sanciones.js" defer></script>
+    <script src="/jump/frontend/js/admin.sistema.js" defer></script>
     <script src="/jump/frontend/js/admin.controller.js" defer></script>
     <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
     <title>Panel de Administración - JUMP</title>
@@ -332,33 +333,21 @@
             <!-- PESTAÑA 6: SISTEMA -->
             <section id="sistema" class="admin-tab">
                 <header class="admin-panel__cabecera">
-                    <h1 class="admin-panel__titulo">Control del Sistema</h1>
+                    <h1 class="admin-panel__titulo">Sistema</h1>
                 </header>
-                
-                <div class="admin-seccion">
-                    <h2 class="admin-seccion__titulo">Seguridad y Respaldo</h2>
-                    <div class="admin-form__grid">
-                        <button class="admin-btn admin-btn--primario"> Realizar Copia de Seguridad Local</button>
-                        <button class="admin-btn admin-btn--exportar"> Restaurar Datos desde Respaldo</button>
-                    </div>
-                </div>
 
-                <div class="admin-seccion">
-                    <h2 class="admin-seccion__titulo">Auditoría de Acciones</h2>
-                    <div class="admin-lista">
-                        <article class="admin-item">
-                            <div class="admin-item__info">
-                                <h3 class="admin-item__equipos" style="font-size: 1rem;">Administrador "admin" editó evento</h3>
-                                <p class="admin-item__detalles"> 01 Oct 2026 •  09:15 AM • Partido: FTI vs FIO</p>
-                            </div>
-                        </article>
-                        <article class="admin-item">
-                            <div class="admin-item__info">
-                                <h3 class="admin-item__equipos" style="font-size: 1rem;">Administrador "admin" registró sanción</h3>
-                                <p class="admin-item__detalles"> 30 Sep 2026 •  16:30 PM • Facultad: FIO</p>
-                            </div>
-                        </article>
-                    </div>
+                <h2 class="admin-seccion__titulo">Copia de Seguridad</h2>
+                <p style="margin-bottom:1rem; color:#65647A;">Descarga el archivo <code>database.sqlite</code> completo.</p>
+                <button type="button" id="btn-backup" class="admin-btn admin-btn--primario">Descargar copia de seguridad</button>
+
+                <h2 class="admin-seccion__titulo" style="margin-top:2rem;">Auditoría de Acciones</h2>
+                <div class="admin-tabla-scroll">
+                    <table class="admin-form__tabla">
+                        <thead>
+                            <tr><th>#</th><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>ID</th><th>IP</th></tr>
+                        </thead>
+                        <tbody id="auditoria-tbody"></tbody>
+                    </table>
                 </div>
             </section>
 

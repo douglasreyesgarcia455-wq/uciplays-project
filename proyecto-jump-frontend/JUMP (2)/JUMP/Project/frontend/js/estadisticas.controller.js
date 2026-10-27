@@ -1,6 +1,7 @@
-// estadisticas.controller.js — Controlador de estadísticas con filtros.
+// estadisticas.controller.js — Controlador de estadísticas adaptado al modelo
+// evento_participantes (puntos eventos - sanciones).
 // Consume /api/eventos, /api/ranking, /api/facultades, /api/sanciones.
-// Pinta 3 cards + 5 gráficos Chart.js. Los filtros (deporte, facultad) re-renderizan todo.
+// Pinta 3 cards + 5 gráficos Chart.js con filtros (deporte, facultad).
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!window.eventosApi || typeof window.eventosApi.getEventos !== 'function' ||
@@ -73,6 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
+        // ============================================================
+        // FILTROS
+        // ============================================================
         const filtrarRanking = (ranking, valorFacultad) => {
             if (valorFacultad === 'todas' || !valorFacultad) return ranking;
             if (valorFacultad === 'top3') return ranking.slice(0, 3);
@@ -83,10 +87,13 @@ document.addEventListener("DOMContentLoaded", () => {
             let result = eventos;
             if (deporte && deporte !== 'todos') result = result.filter(e => e.deporte === deporte);
             if (valorFacultad && valorFacultad !== 'todas' && valorFacultad !== 'top3') {
-                result = result.filter(e => e.equipo_local_facultad === valorFacultad || e.equipo_visitante_facultad === valorFacultad);
+                result = result.filter(e => {
+                    const participantes = e.participantes || [];
+                    return participantes.some(p => p.facultad === valorFacultad);
+                });
             } else if (valorFacultad === 'top3') {
                 const top3 = ranking.slice(0, 3).map(r => r.nombre);
-                result = result.filter(e => top3.includes(e.equipo_local_facultad) || top3.includes(e.equipo_visitante_facultad));
+                result = result.filter(e => (e.participantes || []).some(p => top3.includes(p.facultad)));
             }
             return result;
         };
@@ -103,6 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return result;
         };
 
+        // ============================================================
+        // RENDER
+        // ============================================================
         const render = () => {
             const deporte = $filtroDeporte ? $filtroDeporte.value : 'todos';
             const valorFacultad = $filtroFacultad ? $filtroFacultad.value : 'todas';
@@ -111,7 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const rankFiltrado = filtrarRanking(ranking, valorFacultad);
             const sancFiltradas = filtrarSanciones(sanciones, deporte, valorFacultad);
 
+            // ============================================================
             // 3 CARDS
+            // ============================================================
             const $total = document.getElementById('card-total-partidos');
             if ($total) $total.textContent = evFiltrados.length;
 
@@ -127,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const $participacion = document.getElementById('card-participacion');
             if ($participacion) {
-                const masPart = [...rankFiltrado].sort((a, b) => (b.total_eventos || 0) - (a.total_eventos || 0))[0];
+                const masPart = [...rankFiltrado].sort((a, b) => (b.puntos || 0) - (a.puntos || 0))[0];
                 if (masPart) {
                     $participacion.innerHTML = '<img class="estadisticas__logo" src="' + logoDe(masPart.nombre) + '" alt="Logo ' + masPart.nombre + '" title="' + masPart.nombre + '">';
                 } else {
@@ -135,49 +147,71 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // GRÁFICO 1: Desglose
+            // ============================================================
+            // GRÁFICO 1: Desglose (barras apiladas: puntos por deporte y facultad)
+            // Desde eventos con participantes: cada participante tiene puntos.
+            // Sumamos puntos por facultad + deporte.
+            // ============================================================
             const $g1 = document.getElementById('graficoDesglose');
             if ($g1) {
                 const deportes = [...new Set(evFiltrados.map(e => e.deporte))];
                 const facultadesNombres = rankFiltrado.map(r => r.nombre);
+
+                // Matriz facultad x deporte: suma puntos de los participantes del evento
                 const matriz = {};
                 facultadesNombres.forEach(f => { matriz[f] = {}; deportes.forEach(d => { matriz[f][d] = 0; }); });
                 evFiltrados.forEach(e => {
-                    const local = e.equipo_local_facultad;
-                    const visitante = e.equipo_visitante_facultad;
-                    if (local && matriz[local] && matriz[local][e.deporte] !== undefined) matriz[local][e.deporte]++;
-                    if (visitante && matriz[visitante] && matriz[visitante][e.deporte] !== undefined) matriz[visitante][e.deporte]++;
+                    (e.participantes || []).forEach(p => {
+                        if (matriz[p.facultad] && matriz[p.facultad][e.deporte] !== undefined) {
+                            matriz[p.facultad][e.deporte] += (p.puntos || 0);
+                        }
+                    });
                 });
+
                 const datasets = deportes.map((d, i) => ({
                     label: d,
                     data: facultadesNombres.map(f => matriz[f][d] || 0),
                     backgroundColor: COLORES[i % COLORES.length]
                 }));
+
                 if (charts.g1) charts.g1.destroy();
                 charts.g1 = new Chart($g1.getContext('2d'), {
                     type: 'bar',
                     data: { labels: facultadesNombres, datasets },
-                    options: { responsive: true, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } } }
+                    options: {
+                        responsive: true,
+                        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+                    }
                 });
             }
 
-            // GRÁFICO 2: Eficiencia
+            // ============================================================
+            // GRÁFICO 2: Eficiencia (dona: top 3 por puntos totales)
+            // ============================================================
             const $g2 = document.getElementById('graficoEficiencia');
             if ($g2) {
-                const conOros = rankFiltrado.filter(r => (r.oros || 0) > 0);
-                const labels = conOros.map(r => r.nombre);
-                const data = conOros.map(r => r.oros);
-                const otros = rankFiltrado.filter(r => (r.oros || 0) === 0).length;
-                if (otros > 0) { labels.push('Resto'); data.push(otros); }
+                const conPuntos = rankFiltrado.filter(r => (r.puntos || 0) > 0).slice(0, 3);
+                const labels = conPuntos.map(r => r.nombre);
+                const data = conPuntos.map(r => r.puntos || 0);
+                if (data.length === 0) {
+                    labels.push('Sin puntos positivos');
+                    data.push(1);
+                }
+
                 if (charts.g2) charts.g2.destroy();
                 charts.g2 = new Chart($g2.getContext('2d'), {
                     type: 'doughnut',
-                    data: { labels, datasets: [{ data, backgroundColor: labels.map((_, i) => COLORES[i % COLORES.length]), borderWidth: 0 }] },
+                    data: {
+                        labels,
+                        datasets: [{ data, backgroundColor: labels.map((_, i) => COLORES[i % COLORES.length]), borderWidth: 0 }]
+                    },
                     options: { responsive: true, plugins: { legend: { position: 'right' } } }
                 });
             }
 
-            // GRÁFICO 3: Disciplina
+            // ============================================================
+            // GRÁFICO 3: Disciplina (barras horizontales: puntos descontados por facultad)
+            // ============================================================
             const $g3 = document.getElementById('graficoDisciplina');
             if ($g3) {
                 const puntosPorFac = {};
@@ -189,12 +223,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (charts.g3) charts.g3.destroy();
                 charts.g3 = new Chart($g3.getContext('2d'), {
                     type: 'bar',
-                    data: { labels: entradas.map(e => e[0]), datasets: [{ label: 'Puntos descontados', data: entradas.map(e => e[1]), backgroundColor: '#B8324B', borderRadius: 4 }] },
+                    data: {
+                        labels: entradas.map(e => e[0]),
+                        datasets: [{ label: 'Puntos descontados', data: entradas.map(e => e[1]), backgroundColor: '#B8324B', borderRadius: 4 }]
+                    },
                     options: { responsive: true, indexAxis: 'y' }
                 });
             }
 
-            // GRÁFICO 4: H2H
+            // ============================================================
+            // GRÁFICO 4: H2H (comparar 2 facultades en puntos eventos, sanciones, total)
+            // ============================================================
             const $sel1 = document.getElementById('select-h2h-1');
             const $sel2 = document.getElementById('select-h2h-2');
             const $g4 = document.getElementById('graficoH2H');
@@ -219,24 +258,48 @@ document.addEventListener("DOMContentLoaded", () => {
                 const f1 = rankFiltrado.find(r => r.nombre === $sel1.value);
                 const f2 = rankFiltrado.find(r => r.nombre === $sel2.value);
                 if (f1 && f2) {
-                    const metrics = ['puntos', 'oros', 'platas', 'bronces', 'total_eventos'];
-                    const labelsM = ['Puntos', 'Oros', 'Platas', 'Bronces', 'Total Eventos'];
+                    const metrics = ['puntos_eventos', 'puntos_sanciones', 'puntos'];
+                    const labelsM = ['Pts. Eventos', 'Pts. Sanciones', 'Total'];
                     if (charts.g4) charts.g4.destroy();
+                    // Colorear barras: si el valor es 0, gris claro; si no, color normal
+                    const colorPara = (val, colorNormal) => (val === 0 ? '#D0D0D0' : colorNormal);
                     charts.g4 = new Chart($g4.getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: labelsM,
                             datasets: [
-                                { label: f1.nombre, data: metrics.map(m => f1[m] || 0), backgroundColor: '#1a1088' },
-                                { label: f2.nombre, data: metrics.map(m => f2[m] || 0), backgroundColor: '#5A4BFF' }
+                                {
+                                    label: f1.nombre,
+                                    data: metrics.map(m => f1[m] || 0),
+                                    backgroundColor: metrics.map(m => colorPara(f1[m] || 0, '#1a1088')),
+                                    borderColor: metrics.map(m => (f1[m] || 0) === 0 ? '#999' : '#1a1088'),
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: f2.nombre,
+                                    data: metrics.map(m => f2[m] || 0),
+                                    backgroundColor: metrics.map(m => colorPara(f2[m] || 0, '#5A4BFF')),
+                                    borderColor: metrics.map(m => (f2[m] || 0) === 0 ? '#999' : '#5A4BFF'),
+                                    borderWidth: 1
+                                }
                             ]
                         },
-                        options: { responsive: true }
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    minBarLength: 2   // fuerza que las barras de 0 se vean con 2px
+                                }
+                            }
+                        }
                     });
                 }
             }
 
-            // GRÁFICO 5: Logística
+            // ============================================================
+            // GRÁFICO 5: Logística (sanciones por deporte)
+            // ============================================================
             const $g5 = document.getElementById('graficoLogistica');
             if ($g5) {
                 const sancionesPorDeporte = {};
@@ -248,12 +311,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (charts.g5) charts.g5.destroy();
                 charts.g5 = new Chart($g5.getContext('2d'), {
                     type: 'bar',
-                    data: { labels: entradas.map(e => e[0]), datasets: [{ label: 'Sanciones por deporte', data: entradas.map(e => e[1]), backgroundColor: '#E8A33D', borderRadius: 4 }] },
+                    data: {
+                        labels: entradas.map(e => e[0]),
+                        datasets: [{ label: 'Sanciones por deporte', data: entradas.map(e => e[1]), backgroundColor: '#E8A33D', borderRadius: 4 }]
+                    },
                     options: { responsive: true, beginAtZero: true }
                 });
             }
         };
 
+        // Listeners de filtros y H2H
         if ($filtroDeporte) $filtroDeporte.addEventListener('change', render);
         if ($filtroFacultad) $filtroFacultad.addEventListener('change', render);
         const $sel1 = document.getElementById('select-h2h-1');

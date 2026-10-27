@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.adminDisciplinas.init();
     window.adminParticipantes.init();
     window.adminSanciones.init();
+    window.adminSistema.init();
 
     if (window.authApi.isLoggedIn()) {
         ocultarLogin();
