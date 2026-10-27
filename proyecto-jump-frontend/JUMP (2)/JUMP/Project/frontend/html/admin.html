@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/css/inicio.css">
+    <link rel="stylesheet" href="/frontend/css/admin.css">
+    <script src="/backend/js/admin.js" defer></script>
+    <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
+    <title>Panel de Administración - JUMP</title>
+</head>
+<body>
+
+    <!-- HEADER DE ADMINISTRACIÓN -->
+    <header class="header header--admin">
+        <div class="header__container">
+            <a class="header__brand" href="index.html" aria-label="JUMP, ir al inicio">
+                <img class="header__logo" src="/assets/Logo/JUMP_logo blanco.png" alt="Logo JUMP">
+            </a>
+
+            <nav class="header__nav" aria-label="Navegación de administración">
+                <ul class="header__nav-list">
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin active" href="#eventos" data-target="eventos">Eventos</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#medallas" data-target="medallas">Medallas</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#sanciones" data-target="sanciones">Sanciones</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#participantes" data-target="participantes">Participantes</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#disciplinas" data-target="disciplinas">Disciplinas</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link header__nav-link--admin" href="#sistema" data-target="sistema">Sistema</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <a class="header__admin-link btn-inicio" href="index.html">
+                <span class="header__admin-label">Inicio</span>
+                <span class="header__admin-icon icon-inicio" aria-hidden="true">
+                    <svg class="header__admin-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                </span>
+            </a>
+        </div>
+    </header>
+
+    <main class="main admin-main">
+        <div class="admin-panel">
+
+            <!-- PESTAÑA 1: EVENTOS -->
+            <section id="eventos" class="admin-tab active-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Gestión de Eventos</h1>
+                    <button class="admin-btn admin-btn--exportar">Exportar PDF</button>
+                </header>
+                
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Programar Nuevo Encuentro</h2>
+                    <form class="admin-form">
+                        <div class="admin-form__grid">
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Deporte</label>
+                                <select class="admin-form__input"><option>Fútbol</option><option>Volleyball</option></select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Equipo Local</label>
+                                <select class="admin-form__input"><option>FTI</option><option>FIO</option></select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Equipo Visitante</label>
+                                <select class="admin-form__input"><option>FTE</option><option>CITEC</option></select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Fecha</label>
+                                <input type="date" class="admin-form__input">
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Hora</label>
+                                <input type="time" class="admin-form__input">
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Lugar</label>
+                                <input type="text" class="admin-form__input" placeholder="Ej: Cancha Principal">
+                            </div>
+                        </div>
+                        <button type="button" class="admin-btn admin-btn--primario">Lanzar a Cartelera</button>
+                    </form>
+                </div>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Encuentros Registrados</h2>
+                    <div class="admin-lista">
+                        <article class="admin-item">
+                            <div class="admin-item__info">
+                                <div class="admin-item__encabezado">
+                                    <span class="admin-item__deporte">Volleyball</span>
+                                    <span class="admin-item__estado admin-item__estado--pendiente">Pendiente</span>
+                                </div>
+                                <h3 class="admin-item__equipos">FTI vs FIO</h3>
+                                <p class="admin-item__detalles"> 02 Oct •  14:00 •  Cancha 3</p>
+                            </div>
+                            <div class="admin-item__acciones">
+    <!-- Botón Editar -->
+    <button class="admin-btn-icono admin-btn-icono--editar" aria-label="Editar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+    </button>
+    
+    <!-- Botón Eliminar -->
+    <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    </button>
+</div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 2: MEDALLAS -->
+            <section id="medallas" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Asignación de Medallas</h1>
+                </header>
+                
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Entrega de Medallas</h2>
+                    <form class="admin-form">
+                        <div class="admin-form__grid">
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Facultad Ganadora</label>
+                                <select class="admin-form__input"><option>FTI</option><option>FTE</option></select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Deporte</label>
+                                <select class="admin-form__input"><option>Fútbol</option><option>Béisbol</option></select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Posición (Medalla)</label>
+                                <select class="admin-form__input admin-input-destacado">
+                                    <option>🥇 Primer Lugar (31 pts)</option>
+                                    <option>🥈 Segundo Lugar (15 pts)</option>
+                                    <option>🥉 Tercer Lugar (7 pts)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="admin-btn admin-btn--primario">Registrar en Ranking</button>
+                    </form>
+                </div>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Últimos Resultados Registrados</h2>
+                    <div class="admin-lista">
+                        <article class="admin-item">
+                            <div class="admin-item__info">
+                                <h3 class="admin-item__equipos">FTI - Fútbol</h3>
+                                <p class="admin-item__detalles">Asignado el 01 Octubre, 2026 • +31 Puntos</p>
+                            </div>
+                            <div class="admin-item__acciones">
+    <!-- Botón Editar -->
+    <button class="admin-btn-icono admin-btn-icono--editar" aria-label="Editar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+    </button>
+    
+    <!-- Botón Eliminar -->
+    <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    </button>
+</div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 3: SANCIONES -->
+            <section id="sanciones" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Panel de Sanciones</h1>
+                </header>
+                
+                <div class="admin-seccion admin-seccion--alerta">
+                    <h2 class="admin-seccion__titulo">Aplicar Penalización</h2>
+                    <form class="admin-form">
+                        <div class="admin-form__grid">
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Facultad a Sancionar</label>
+                                <select class="admin-form__input"><option>FIO</option><option>CITEC</option></select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Puntos a Deducir</label>
+                                <input type="number" class="admin-form__input" placeholder="Ej: 5">
+                            </div>
+                            <div class="admin-form__grupo admin-form__grupo--full">
+                                <label class="admin-form__label">Motivo de la sanción (Justificación)</label>
+                                <textarea class="admin-form__input" rows="2" placeholder="Describa la actitud antideportiva..."></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="admin-btn admin-btn--alerta">Aplicar Sanción</button>
+                    </form>
+                </div>
+                
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Sanciones Activas</h2>
+                    <div class="admin-lista">
+                        <article class="admin-item">
+                            <div class="admin-item__info">
+                                <h3 class="admin-item__equipos" style="color: var(--color-alert)">-5 Puntos a FIO</h3>
+                                <p class="admin-item__detalles">Motivo: Llegada tardía al evento de Ajedrez.</p>
+                            </div>
+                            <div class="admin-item__acciones">
+    <!-- Botón Editar -->
+    <button class="admin-btn-icono admin-btn-icono--editar" aria-label="Editar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+    </button>
+    
+    <!-- Botón Eliminar -->
+    <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    </button>
+</div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 4: PARTICIPANTES -->
+            <section id="participantes" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Facultades y Equipos</h1>
+                </header>
+                
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Registrar Facultad</h2>
+                    <form class="admin-form">
+                        <div class="admin-form__grid">
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Nombre de la Facultad</label>
+                                <input type="text" class="admin-form__input" placeholder="Ej: Facultad de Tecnologías...">
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Siglas</label>
+                                <input type="text" class="admin-form__input" placeholder="Ej: FTI">
+                            </div>
+                        </div>
+                        <button type="button" class="admin-btn admin-btn--primario">Inscribir Facultad</button>
+                    </form>
+                </div>
+                
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Facultades Inscritas</h2>
+                    <div class="admin-lista">
+                        <article class="admin-item">
+                            <div class="admin-item__info">
+                                <div class="admin-item__encabezado">
+                                    <span class="admin-item__deporte">FTI</span>
+                                </div>
+                                <h3 class="admin-item__equipos">Facultad de Tecnologías Interactivas</h3>
+                                <p class="admin-item__detalles">Equipos inscritos: 8</p>
+                            </div>
+                            <div class="admin-item__acciones">
+    <!-- Botón Editar -->
+    <button class="admin-btn-icono admin-btn-icono--editar" aria-label="Editar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+    </button>
+    
+    <!-- Botón Eliminar -->
+    <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
+        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    </button>
+</div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PESTAÑA 5: DISCIPLINAS -->
+            <section id="disciplinas" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Gestión de Disciplinas</h1>
+                    <button class="admin-btn admin-btn--exportar">Exportar Listado</button>
+                </header>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Crear Nueva Disciplina</h2>
+                    <form class="admin-form">
+                        <div class="admin-form__grid">
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Deporte</label>
+                                <select class="admin-form__input">
+                                    <option>Fútbol</option>
+                                    <option>Volleyball</option>
+                                    <option>Béisbol</option>
+                                    <option>Ajedrez</option>
+                                    <option>Atletismo</option>
+                                    <option>Baloncesto</option>
+                                </select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Nombre</label>
+                                <input type="text" class="admin-form__input" placeholder="Ej: Fútbol Masculino">
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Sexo</label>
+                                <select class="admin-form__input">
+                                    <option>MASCULINO</option>
+                                    <option>FEMENINO</option>
+                                    <option>MIXTO</option>
+                                </select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Tipo de Participación</label>
+                                <select class="admin-form__input">
+                                    <option>INDIVIDUAL</option>
+                                    <option>EQUIPO</option>
+                                </select>
+                            </div>
+                            <div class="admin-form__grupo">
+                                <label class="admin-form__label">Capacidad Máxima</label>
+                                <input type="number" class="admin-form__input" placeholder="Ej: 16" min="1">
+                            </div>
+                            <div class="admin-form__grupo admin-form__grupo--full">
+                                <label class="admin-form__label">Descripción</label>
+                                <textarea class="admin-form__input" rows="2" placeholder="Descripción opcional..."></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="admin-btn admin-btn--primario">Crear Disciplina</button>
+                    </form>
+                </div>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Disciplinas Registradas</h2>
+                    <div class="admin-lista">
+                        <article class="admin-item">
+                            <div class="admin-item__info">
+                                <div class="admin-item__encabezado">
+                                    <span class="admin-item__deporte">Fútbol</span>
+                                    <span class="admin-item__estado admin-item__estado--pendiente">Activa</span>
+                                </div>
+                                <h3 class="admin-item__equipos">Fútbol Masculino</h3>
+                                <p class="admin-item__detalles">MASCULINO • EQUIPO • Capacidad: 16</p>
+                            </div>
+                            <div class="admin-item__acciones">
+                                <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
+                                    <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- PESTAÑA 6: SISTEMA -->
+            <section id="sistema" class="admin-tab">
+                <header class="admin-panel__cabecera">
+                    <h1 class="admin-panel__titulo">Control del Sistema</h1>
+                </header>
+                
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Seguridad y Respaldo</h2>
+                    <div class="admin-form__grid">
+                        <button class="admin-btn admin-btn--primario"> Realizar Copia de Seguridad Local</button>
+                        <button class="admin-btn admin-btn--exportar"> Restaurar Datos desde Respaldo</button>
+                    </div>
+                </div>
+
+                <div class="admin-seccion">
+                    <h2 class="admin-seccion__titulo">Auditoría de Acciones</h2>
+                    <div class="admin-lista">
+                        <article class="admin-item">
+                            <div class="admin-item__info">
+                                <h3 class="admin-item__equipos" style="font-size: 1rem;">Administrador "admin" editó evento</h3>
+                                <p class="admin-item__detalles"> 01 Oct 2026 •  09:15 AM • Partido: FTI vs FIO</p>
+                            </div>
+                        </article>
+                        <article class="admin-item">
+                            <div class="admin-item__info">
+                                <h3 class="admin-item__equipos" style="font-size: 1rem;">Administrador "admin" registró sanción</h3>
+                                <p class="admin-item__detalles"> 30 Sep 2026 •  16:30 PM • Facultad: FIO</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            
+            <!-- Espacio para Logo Izquierdo (Logo principal) -->
+            <a class="footer__brand footer__brand--izq" href="index.html" aria-label="Ir al inicio">
+                <img class="footer__logo" src="/assets/Logo/JUMP_logo blanco.png" alt="Logo JUMP">
+            </a>
+
+            <!-- Enlaces Centrales -->
+            <nav class="footer__nav" aria-label="Navegación del pie de página">
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="index.html">Inicio</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="ranking.html">Ranking</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="cartelera.html">Cartelera</a></li>
+                    <li class="footer__nav-item"><a class="footer__nav-link" href="estadisticas.html">Estadísticas</a></li>
+                </ul>
+            </nav>
+
+            <!-- Espacio para Logo Derecho (Universidad, facultad, patrocinador, etc.) -->
+            <a class="footer__brand footer__brand--der" href="index.html" aria-label="Ir al inicio">
+                <img class="footer__logo" src="/assets/Logo/Logo Uci Blanco .png" alt="Logo UCI">
+            </a>
+
+        </div>
+    </footer>
+
+</body>
+</html>
