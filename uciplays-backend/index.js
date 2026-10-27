@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./src/config/db');
 
-const resultadosRoutes = require('./src/routes/resultados.routes');
 const rankingRoutes = require('./src/routes/ranking.routes');
 const facultadesRoutes = require('./src/routes/facultades.routes');
 const eventosRoutes = require('./src/routes/eventos.routes');
@@ -36,18 +35,6 @@ const inicializarDB = async () => {
             )
         `);
 
-        // Tabla de Resultados (Medallas y Sanciones)
-        await db.query(`
-            CREATE TABLE IF NOT EXISTS resultados (
-                id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                facultad_id INTEGER, 
-                deporte TEXT, 
-                posicion_lograda INTEGER, 
-                puntuacion_final INTEGER, 
-                fecha DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-
         // Tabla de Facultades
         await db.query(`CREATE TABLE IF NOT EXISTS facultades (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT UNIQUE)`);
         
@@ -66,7 +53,6 @@ const inicializarDB = async () => {
 inicializarDB();
 configurarEstaticos(app);
 
-app.use('/api/resultados', resultadosRoutes);
 app.use('/api/ranking', rankingRoutes);
 app.use('/api/facultades', facultadesRoutes);
 app.use('/api/eventos', eventosRoutes);
