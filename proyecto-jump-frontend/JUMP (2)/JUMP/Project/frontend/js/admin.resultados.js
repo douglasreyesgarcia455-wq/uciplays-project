@@ -25,10 +25,11 @@ window.adminResultados = (function () {
     async function cargarEventosYRanking() {
         try {
             const [eventos, ranking] = await Promise.all([
-                window.eventosApi.getEventos({ estado: 'en curso' }),
+                window.eventosApi.getEventos(),
                 window.rankingApi.getRanking()
             ]);
-            state.eventos = eventos || [];
+            // Solo mostrar eventos en curso o finalizados (no pendientes)
+            state.eventos = (eventos || []).filter(e => e.estado === 'en curso' || e.estado === 'finalizado');
             state.ranking = ranking || [];
             poblarSelectEventos();
             renderMedallero();
@@ -46,7 +47,8 @@ window.adminResultados = (function () {
         state.eventos.forEach(ev => {
             const opt = document.createElement('option');
             opt.value = ev.id;
-            opt.textContent = `#${ev.id} ${ev.deporte} — ${ev.fecha} ${ev.hora}`;
+            const estadoTxt = ev.estado === 'finalizado' ? ' [finalizado]' : '';
+            opt.textContent = `#${ev.id} ${ev.deporte} — ${ev.fecha} ${ev.hora}${estadoTxt}`;
             $sel.appendChild(opt);
         });
         if (valorActual) $sel.value = valorActual;
@@ -59,6 +61,14 @@ window.adminResultados = (function () {
                 const id = parseInt($sel.value);
                 state.eventoSeleccionado = state.eventos.find(e => e.id === id) || null;
                 state.posiciones = {};
+                // Si el evento ya tiene posiciones (finalizado), cargarlas
+                if (state.eventoSeleccionado && Array.isArray(state.eventoSeleccionado.participantes)) {
+                    state.eventoSeleccionado.participantes.forEach(p => {
+                        if (p.posicion !== null && p.posicion !== undefined) {
+                            state.posiciones[p.equipo_id] = p.posicion;
+                        }
+                    });
+                }
                 renderParticipantes();
                 renderMedallero();
             });
@@ -199,9 +209,12 @@ window.adminResultados = (function () {
             window.adminToast.mostrar('Asigna una posición única a cada equipo', 'error');
             return;
         }
+        const esFinalizado = state.eventoSeleccionado.estado === 'finalizado';
         const okGuardar = await window.adminConfirm.mostrar({
             titulo: 'Guardar resultado',
-            mensaje: '¿Guardar resultado? El evento pasará a finalizado.',
+            mensaje: esFinalizado
+                ? 'Este evento ya está finalizado. ¿Recalcular el resultado? El ranking se actualizará.'
+                : '¿Guardar resultado? El evento pasará a finalizado.',
             textoAceptar: 'Guardar'
         });
         if (!okGuardar) return;

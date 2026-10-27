@@ -301,19 +301,27 @@ window.adminEventos = (function () {
     async function editar(id) {
         const ev = state.eventos.find(e => e.id === id);
         if (!ev) return;
-        const nuevaFecha = prompt('Nueva fecha (YYYY-MM-DD):', ev.fecha || '');
-        if (nuevaFecha === null) return;
-        const nuevaHora = prompt('Nueva hora (HH:MM):', ev.hora || '');
-        if (nuevaHora === null) return;
-        const nuevoLugar = prompt('Nuevo lugar:', ev.lugar || '');
-        if (nuevoLugar === null) return;
+        const data = await window.adminPrompt.mostrar({
+            titulo: 'Editar evento',
+            campos: [
+                { name: 'fecha', label: 'Fecha (YYYY-MM-DD)', value: ev.fecha || '', type: 'date' },
+                { name: 'hora', label: 'Hora (HH:MM)', value: ev.hora || '', type: 'time' },
+                { name: 'lugar', label: 'Lugar', value: ev.lugar || '', type: 'text' }
+            ],
+            textoAceptar: 'Guardar'
+        });
+        if (!data) return;
+        if (!data.fecha || !data.hora || !data.lugar || data.lugar.length < 3) {
+            window.adminToast.mostrar('Completa fecha, hora y lugar (mínimo 3 caracteres)', 'error');
+            return;
+        }
         try {
             const participantes = (ev.participantes || []).map(p => ({ equipo_id: p.equipo_id }));
             await window.apiClient.put('/eventos/' + id, {
                 deporte_id: ev.deporte_id || null,
-                fecha: nuevaFecha,
-                hora: nuevaHora,
-                lugar: nuevoLugar,
+                fecha: data.fecha,
+                hora: data.hora,
+                lugar: data.lugar,
                 estado: ev.estado || 'pendiente',
                 participantes
             });
