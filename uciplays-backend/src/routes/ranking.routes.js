@@ -9,18 +9,24 @@ router.get('/', async (req, res) => {
                 f.id,
                 f.nombre,
                 f.logo_url,
-                SUM(CASE WHEN r.posicion_lograda = 1 THEN 1 ELSE 0 END) AS oros,
-                SUM(CASE WHEN r.posicion_lograda = 2 THEN 1 ELSE 0 END) AS platas,
-                SUM(CASE WHEN r.posicion_lograda = 3 THEN 1 ELSE 0 END) AS bronces,
-                SUM(CASE WHEN r.posicion_lograda = 4 THEN 1 ELSE 0 END) AS cuarto,
-                SUM(CASE WHEN r.posicion_lograda = 5 THEN 1 ELSE 0 END) AS quinto,
-                COUNT(r.id) AS total_eventos,
-                COALESCE(SUM(r.puntuacion_final), 0) AS puntos
+                COALESCE(SUM(ep.puntos), 0) AS puntos_eventos,
+                COALESCE((
+                    SELECT SUM(s.puntos_descontados)
+                    FROM sanciones s
+                    JOIN equipos eq ON eq.id = s.equipo_id
+                    WHERE eq.facultad_id = f.id
+                ), 0) AS puntos_sanciones,
+                COALESCE(SUM(ep.puntos), 0) + COALESCE((
+                    SELECT SUM(s.puntos_descontados)
+                    FROM sanciones s
+                    JOIN equipos eq ON eq.id = s.equipo_id
+                    WHERE eq.facultad_id = f.id
+                ), 0) AS puntos
             FROM facultades f
             LEFT JOIN equipos e ON e.facultad_id = f.id
-            LEFT JOIN resultados r ON r.equipo_id = e.id
+            LEFT JOIN evento_participantes ep ON ep.equipo_id = e.id
             GROUP BY f.id, f.nombre, f.logo_url
-            ORDER BY puntos DESC, oros DESC
+            ORDER BY puntos DESC, f.nombre ASC
         `);
         res.json(ranking);
     } catch (error) {

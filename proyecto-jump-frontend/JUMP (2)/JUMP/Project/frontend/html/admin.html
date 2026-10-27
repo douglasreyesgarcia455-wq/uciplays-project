@@ -11,7 +11,13 @@
     <script src="/jump/frontend/js/facultades.api.js" defer></script>
     <script src="/jump/frontend/js/deportes.api.js" defer></script>
     <script src="/jump/frontend/js/equipos.api.js" defer></script>
-    <script src="/jump/frontend/js/admin.js" defer></script>
+    <script src="/jump/frontend/js/admin.toast.js" defer></script>
+    <script src="/jump/frontend/js/admin.paginado.js" defer></script>
+    <script src="/jump/frontend/js/admin.validacion.js" defer></script>
+    <script src="/jump/frontend/js/admin.tabs.js" defer></script>
+    <script src="/jump/frontend/js/admin.eventos.js" defer></script>
+    <script src="/jump/frontend/js/admin.resultados.js" defer></script>
+    <script src="/jump/frontend/js/admin.controller.js" defer></script>
     <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
     <title>Panel de Administración - JUMP</title>
 </head>
@@ -30,7 +36,7 @@
                         <a class="header__nav-link header__nav-link--admin active" href="#eventos" data-target="eventos">Eventos</a>
                     </li>
                     <li class="header__nav-item">
-                        <a class="header__nav-link header__nav-link--admin" href="#medallas" data-target="medallas">Medallas</a>
+                        <a class="header__nav-link header__nav-link--admin" href="#resultados" data-target="resultados">Resultados</a>
                     </li>
                     <li class="header__nav-item">
                         <a class="header__nav-link header__nav-link--admin" href="#sanciones" data-target="sanciones">Sanciones</a>
@@ -121,64 +127,41 @@
             </section>
 
             <!-- PESTAÑA 2: MEDALLAS -->
-            <section id="medallas" class="admin-tab">
+            <section id="resultados" class="admin-tab">
                 <header class="admin-panel__cabecera">
-                    <h1 class="admin-panel__titulo">Asignación de Medallas</h1>
+                    <h1 class="admin-panel__titulo">Resultados</h1>
                 </header>
-                
-                <div class="admin-seccion">
-                    <h2 class="admin-seccion__titulo">Entrega de Medallas</h2>
-                    <form class="admin-form">
-                        <div class="admin-form__grid">
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Facultad Ganadora</label>
-                                <select class="admin-form__input"><option>FTI</option><option>FTE</option></select>
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Deporte</label>
-                                <select class="admin-form__input"><option>Fútbol</option><option>Béisbol</option></select>
-                            </div>
-                            <div class="admin-form__grupo">
-                                <label class="admin-form__label">Posición (Medalla)</label>
-                                <select class="admin-form__input admin-input-destacado">
-                                    <option>🥇 Primer Lugar (31 pts)</option>
-                                    <option>🥈 Segundo Lugar (15 pts)</option>
-                                    <option>🥉 Tercer Lugar (7 pts)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="button" class="admin-btn admin-btn--primario">Registrar en Ranking</button>
-                    </form>
-                </div>
 
-                <div class="admin-seccion">
-                    <h2 class="admin-seccion__titulo">Últimos Resultados Registrados</h2>
-                    <div class="admin-lista">
-                        <article class="admin-item">
-                            <div class="admin-item__info">
-                                <h3 class="admin-item__equipos">FTI - Fútbol</h3>
-                                <p class="admin-item__detalles">Asignado el 01 Octubre, 2026 • +31 Puntos</p>
-                            </div>
-                            <div class="admin-item__acciones">
-    <!-- Botón Editar -->
-    <button class="admin-btn-icono admin-btn-icono--editar" aria-label="Editar">
-        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-        </svg>
-    </button>
-    
-    <!-- Botón Eliminar -->
-    <button class="admin-btn-icono admin-btn-icono--eliminar" aria-label="Eliminar">
-        <svg class="admin-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
-        </svg>
-    </button>
-</div>
-                        </article>
+                <div class="admin-resultados-grid">
+                    <!-- Columna izquierda: definir resultado -->
+                    <div class="admin-resultados-form">
+                        <h2 class="admin-seccion__titulo">Definir Resultado</h2>
+                        <div class="admin-form__grupo">
+                            <label class="admin-form__label">Evento en curso</label>
+                            <select id="resultado-evento" class="admin-form__input">
+                                <option value="">— Selecciona un evento —</option>
+                            </select>
+                        </div>
+                        <div id="resultado-participantes-tabla" style="display:none; margin-top:1rem;">
+                            <table class="admin-form__tabla">
+                                <thead>
+                                    <tr><th>Equipo</th><th>Posición</th><th>Puntos</th></tr>
+                                </thead>
+                                <tbody id="resultado-participantes-tbody"></tbody>
+                            </table>
+                            <button type="button" id="btn-guardar-resultado" class="admin-btn admin-btn--primario" style="margin-top:1rem;">Guardar Resultado</button>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha: medallero -->
+                    <div class="admin-resultados-medallero">
+                        <h2 class="admin-seccion__titulo">Medallero por Facultad</h2>
+                        <table class="admin-form__tabla admin-form__tabla--compacta">
+                            <thead>
+                                <tr><th>#</th><th>Facultad</th><th>Pts. Eventos</th><th>Pts. Sanciones</th><th>Total</th></tr>
+                            </thead>
+                            <tbody id="medallero-tbody"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -464,6 +447,10 @@
         </form>
     </div>
 </div>
+
+
+<!-- CONTENEDOR DE TOASTS -->
+<div class="toast-container" id="toast-container"></div>
 
 </body>
 </html>

@@ -1,70 +1,42 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const { verificarToken, verificarRol } = require('../middleware/authMiddleware');
+const { verificarToken } = require('../middleware/authMiddleware');
 const { registrarAuditoria } = require('../middleware/auditoriaHelper');
 
-// Extrae el .id de la primera fila de un db.query. Devuelve null si no hay filas.
-async function obtenerId(query, params) {
-    const rows = await db.query(query, params);
-    return rows && rows[0] ? rows[0].id : null;
+// Puntos por posición: 1º→3, 2º→2, 3º→1, 4º+→0
+function puntosPorPosicion(posicion) {
+    if (posicion === 1) return 3;
+    if (posicion === 2) return 2;
+    if (posicion === 3) return 1;
+    return 0;
 }
 
-// Resuelve deporte_id a partir de deporte_id (si viene) o deporte (texto).
-async function resolverDeporteId(body) {
-    if (body.deporte_id) return body.deporte_id;
-    if (!body.deporte) return null;
-    return await obtenerId('SELECT id FROM deportes WHERE nombre = ?', [body.deporte]);
-}
-
-// Resuelve equipo_local_id y equipo_visitante_id.
-// Prioridad: IDs directos del body > parseo de enfrentamiento "LOCAL vs VISITANTE".
-// El parseo busca por facultad + deporte (no por nombre exacto del equipo).
-async function resolverEquipos(body, deporteId) {
-    let localId = body.equipo_local_id || null;
-    let visitanteId = body.equipo_visitante_id || null;
-
-    if (!localId || !visitanteId) {
-        if (!body.enfrentamiento) return { localId, visitanteId };
-        const partes = String(body.enfrentamiento).split(/\s+vs\s+/i);
-        if (partes.length !== 2) return { localId, visitanteId };
-        const localNombre = partes[0].trim();
-        const visitanteNombre = partes[1].trim();
-
-        if (!localId) {
-            localId = await obtenerId(
-                'SELECT e.id FROM equipos e JOIN facultades f ON f.id = e.facultad_id WHERE f.nombre = ? AND e.deporte_id = ?',
-                [localNombre, deporteId]
-            );
-        }
-        if (!visitanteId) {
-            visitanteId = await obtenerId(
-                'SELECT e.id FROM equipos e JOIN facultades f ON f.id = e.facultad_id WHERE f.nombre = ? AND e.deporte_id = ?',
-                [visitanteNombre, deporteId]
-            );
-        }
-    }
-    return { localId, visitanteId };
-}
-
-// GET / → lista de eventos con nombres de deporte y equipos
+// GET /eventos?estado=en%20curso
 router.get('/', async (req, res) => {
     try {
-        const eventos = await db.query(
-            `SELECT ev.id, d.nombre AS deporte,
-                    fl.nombre AS equipo_local_facultad,
-                    el.nombre AS equipo_local_nombre,
-                    fv.nombre AS equipo_visitante_facultad,
-                    ev2.nombre AS equipo_visitante_nombre,
-                    ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles, ev.probabilidad
-             FROM eventos ev
-             JOIN deportes d ON d.id = ev.deporte_id
-             JOIN equipos el ON el.id = ev.equipo_local_id
-             JOIN facultades fl ON fl.id = el.facultad_id
-             JOIN equipos ev2 ON ev2.id = ev.equipo_visitante_id
-             JOIN facultades fv ON fv.id = ev2.facultad_id
-             ORDER BY ev.fecha ASC`
-        );
+        const { estado } = req.query;
+        let sql = `SELECT ev.id, d.nombre AS deporte, ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles
+                   FROM eventos ev
+                   JOIN deportes d ON d.id = ev.deporte_id`;
+        const params = [];
+        if (estado) { sql += ' WHERE ev.estado = ?'; params.push(estado); }
+        sql += ' ORDER BY ev.fecha ASC, ev.hora ASC';
+
+        const eventos = await db.query(sql, params);
+        // Adjuntar participantes a cada evento
+        for (const ev of eventos) {
+            ev.participantes = await db.query(
+                `SELECT ep.id, ep.equipo_id, eq.nombre AS equipo_nombre, f.nombre AS facultad, d.nombre AS deporte,
+                        ep.posicion, ep.puntos
+                 FROM evento_participantes ep
+                 JOIN equipos eq ON eq.id = ep.equipo_id
+                 JOIN facultades f ON f.id = eq.facultad_id
+                 JOIN deportes d ON d.id = eq.deporte_id
+                 WHERE ep.evento_id = ?
+                 ORDER BY COALESCE(ep.posicion, 999), eq.nombre`, [ev.id]
+            );
+        }
         res.json(eventos);
     } catch (error) {
         console.error('Error GET /eventos:', error);
@@ -72,80 +44,81 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET /:id → un evento con nombres
 router.get('/:id', async (req, res) => {
     try {
         const rows = await db.query(
-            `SELECT ev.id, d.nombre AS deporte,
-                    fl.nombre AS equipo_local_facultad,
-                    el.nombre AS equipo_local_nombre,
-                    fv.nombre AS equipo_visitante_facultad,
-                    ev2.nombre AS equipo_visitante_nombre,
-                    ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles, ev.probabilidad
-             FROM eventos ev
-             JOIN deportes d ON d.id = ev.deporte_id
-             JOIN equipos el ON el.id = ev.equipo_local_id
-             JOIN facultades fl ON fl.id = el.facultad_id
-             JOIN equipos ev2 ON ev2.id = ev.equipo_visitante_id
-             JOIN facultades fv ON fv.id = ev2.facultad_id
-             WHERE ev.id = ?`, [req.params.id]
+            `SELECT ev.id, d.nombre AS deporte, ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles
+             FROM eventos ev JOIN deportes d ON d.id = ev.deporte_id WHERE ev.id = ?`, [req.params.id]
         );
         if (!rows || rows.length === 0) return res.status(404).json({ error: 'Evento no encontrado' });
-        res.json(rows[0]);
+        const ev = rows[0];
+        ev.participantes = await db.query(
+            `SELECT ep.id, ep.equipo_id, eq.nombre AS equipo_nombre, f.nombre AS facultad, d.nombre AS deporte,
+                    ep.posicion, ep.puntos
+             FROM evento_participantes ep
+             JOIN equipos eq ON eq.id = ep.equipo_id
+             JOIN facultades f ON f.id = eq.facultad_id
+             JOIN deportes d ON d.id = eq.deporte_id
+             WHERE ep.evento_id = ?
+             ORDER BY COALESCE(ep.posicion, 999), eq.nombre`, [ev.id]
+        );
+        res.json(ev);
     } catch (error) {
         console.error('Error GET /eventos/:id:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// POST / → crear evento. Acepta IDs directos o (deporte + enfrentamiento) texto.
 router.post('/', verificarToken, async (req, res) => {
     try {
         const body = req.body || {};
-        const deporteId = await resolverDeporteId(body);
-        if (!deporteId) {
-            return res.status(400).json({ error: 'Deporte no encontrado: ' + (body.deporte || '(vacío)') });
-        }
-        const { localId, visitanteId } = await resolverEquipos(body, deporteId);
-        if (!localId) return res.status(400).json({ error: 'Equipo local no encontrado' });
-        if (!visitanteId) return res.status(400).json({ error: 'Equipo visitante no encontrado' });
+        if (!body.deporte_id) return res.status(400).json({ error: 'deporte_id requerido' });
+        const participantes = Array.isArray(body.participantes) ? body.participantes : [];
+        if (participantes.length < 2) return res.status(400).json({ error: 'Se requieren al menos 2 participantes' });
 
         await db.query(
-            `INSERT INTO eventos (deporte_id, equipo_local_id, equipo_visitante_id, fecha, hora, lugar, estado, detalles, probabilidad)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [deporteId, localId, visitanteId, body.fecha || null, body.hora || null, body.lugar || null,
-             body.estado || 'proximo', body.detalles || '', parseInt(body.probabilidad) || 50]
+            `INSERT INTO eventos (deporte_id, fecha, hora, lugar, estado, detalles) VALUES (?, ?, ?, ?, ?, ?)`,
+            [body.deporte_id, body.fecha || null, body.hora || null, body.lugar || null,
+             body.estado || 'pendiente', body.detalles || '']
         );
         const idRows = await db.query('SELECT last_insert_rowid() AS id');
-        const nuevoId = idRows && idRows[0] ? idRows[0].id : null;
-        await registrarAuditoria(req, 'crear', 'evento', nuevoId, { deporteId, localId, visitanteId, fecha: body.fecha });
-        res.status(201).json({ message: 'Creado', id: nuevoId });
+        const eventoId = idRows[0].id;
+
+        for (const p of participantes) {
+            if (!p.equipo_id) continue;
+            await db.query(
+                'INSERT INTO evento_participantes (evento_id, equipo_id, posicion, puntos) VALUES (?, ?, ?, ?)',
+                [eventoId, p.equipo_id, null, 0]
+            );
+        }
+        await registrarAuditoria(req, 'crear', 'evento', eventoId, { deporte_id: body.deporte_id, participantes: participantes.length });
+        res.status(201).json({ message: 'Creado', id: eventoId });
     } catch (error) {
         console.error('Error POST /eventos:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// PUT /:id → actualizar evento. Mismo parseo que POST.
 router.put('/:id', verificarToken, async (req, res) => {
     try {
         const body = req.body || {};
-        const deporteId = await resolverDeporteId(body);
-        if (!deporteId) {
-            return res.status(400).json({ error: 'Deporte no encontrado: ' + (body.deporte || '(vacío)') });
-        }
-        const { localId, visitanteId } = await resolverEquipos(body, deporteId);
-        if (!localId) return res.status(400).json({ error: 'Equipo local no encontrado' });
-        if (!visitanteId) return res.status(400).json({ error: 'Equipo visitante no encontrado' });
-
+        const id = req.params.id;
         await db.query(
-            `UPDATE eventos SET deporte_id = ?, equipo_local_id = ?, equipo_visitante_id = ?,
-                    fecha = ?, hora = ?, lugar = ?, estado = ?, detalles = ?, probabilidad = ?
-             WHERE id = ?`,
-            [deporteId, localId, visitanteId, body.fecha || null, body.hora || null, body.lugar || null,
-             body.estado || 'proximo', body.detalles || '', parseInt(body.probabilidad) || 50, req.params.id]
+            `UPDATE eventos SET deporte_id = ?, fecha = ?, hora = ?, lugar = ?, estado = ?, detalles = ? WHERE id = ?`,
+            [body.deporte_id, body.fecha || null, body.hora || null, body.lugar || null,
+             body.estado || 'pendiente', body.detalles || '', id]
         );
-        await registrarAuditoria(req, 'editar', 'evento', parseInt(req.params.id), { deporteId, localId, visitanteId });
+        // Actualizar participantes: borrar los que ya no están, dejar los existentes, insertar nuevos
+        const participantes = Array.isArray(body.participantes) ? body.participantes : [];
+        await db.query('DELETE FROM evento_participantes WHERE evento_id = ?', [id]);
+        for (const p of participantes) {
+            if (!p.equipo_id) continue;
+            await db.query(
+                'INSERT INTO evento_participantes (evento_id, equipo_id, posicion, puntos) VALUES (?, ?, ?, ?)',
+                [id, p.equipo_id, p.posicion || null, 0]
+            );
+        }
+        await registrarAuditoria(req, 'editar', 'evento', parseInt(id), { deporte_id: body.deporte_id });
         res.json({ message: 'Actualizado' });
     } catch (error) {
         console.error('Error PUT /eventos/:id:', error);
@@ -153,11 +126,46 @@ router.put('/:id', verificarToken, async (req, res) => {
     }
 });
 
-// DELETE /:id
+// POST /eventos/:id/resultado — asignar posiciones y finalizar
+router.post('/:id/resultado', verificarToken, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const body = req.body || {};
+        const resultados = Array.isArray(body.resultados) ? body.resultados : [];
+        if (resultados.length === 0) return res.status(400).json({ error: 'Se requiere al menos un resultado' });
+
+        // Validar posiciones únicas
+        const posiciones = resultados.map(r => r.posicion).filter(p => p != null);
+        const setPos = new Set(posiciones);
+        if (setPos.size !== posiciones.length) {
+            return res.status(400).json({ error: 'Las posiciones no pueden repetirse' });
+        }
+
+        // Actualizar cada participante
+        for (const r of resultados) {
+            const pos = r.posicion || null;
+            const pts = puntosPorPosicion(pos);
+            await db.query(
+                'UPDATE evento_participantes SET posicion = ?, puntos = ? WHERE evento_id = ? AND equipo_id = ?',
+                [pos, pts, id, r.equipo_id]
+            );
+        }
+        // Marcar evento como finalizado
+        await db.query("UPDATE eventos SET estado = 'finalizado' WHERE id = ?", [id]);
+        await registrarAuditoria(req, 'finalizar', 'evento', parseInt(id), { resultados: resultados.length });
+        res.json({ message: 'Resultado guardado y evento finalizado' });
+    } catch (error) {
+        console.error('Error POST /eventos/:id/resultado:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 router.delete('/:id', verificarToken, async (req, res) => {
     try {
-        await db.query('DELETE FROM eventos WHERE id = ?', [req.params.id]);
-        await registrarAuditoria(req, 'borrar', 'evento', parseInt(req.params.id), null);
+        const id = req.params.id;
+        await db.query('DELETE FROM evento_participantes WHERE evento_id = ?', [id]);
+        await db.query('DELETE FROM eventos WHERE id = ?', [id]);
+        await registrarAuditoria(req, 'borrar', 'evento', parseInt(id), null);
         res.json({ message: 'Eliminado' });
     } catch (error) {
         console.error('Error DELETE /eventos/:id:', error);

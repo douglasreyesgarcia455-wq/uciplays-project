@@ -314,3 +314,82 @@
 .modal-admin__error--visible {
     display: block !important;
 }
+
+/* Toast de notificaciones (crear/editar/borrar) */
+.toast-container {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.toast {
+    background: #167963;
+    color: #fff;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: 320px;
+}
+.toast--visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+.toast--error {
+    background: #B8324B;
+}
+.toast--info {
+    background: #1a1088;
+}
+
+/* Validación inline de campos */
+.admin-form__input--error {
+    border: 2px solid #B8324B !important;
+    background: #fdf2f4 !important;
+}
+.admin-form__error-msg {
+    color: #B8324B;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Grid del tab Resultados: 2 columnas */
+.admin-resultados-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+@media (max-width: 900px) {
+    .admin-resultados-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tabla compacta del medallero */
+.admin-form__tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.admin-form__tabla th,
+.admin-form__tabla td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+.admin-form__tabla th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+.admin-form__tabla--compacta td,
+.admin-form__tabla--compacta th {
+    padding: 0.3rem 0.5rem;
+}
