@@ -14,3 +14,8 @@ window.authApi = {
     },
     isLoggedIn: () => !!localStorage.getItem('token')
 };
+
+// Inyectar el tokenProvider en la fachada HTTP (bajo acoplamiento).
+if (window.apiClient && typeof window.apiClient.setTokenProvider === 'function') {
+    window.apiClient.setTokenProvider(() => localStorage.getItem('token'));
+}

@@ -1,22 +1,29 @@
-// api-client.js — Fachada sobre fetch (única fuente de verdad para HTTP).
-// Envía Authorization: Bearer <token> si hay token en localStorage.
+// api-client.js — Fachada HTTP (única fuente de verdad).
+// Bajo acoplamiento: no lee localStorage directamente; el token se inyecta
+// desde auth.api.js mediante setTokenProvider.
 
 const API_BASE = '/api';
 
+let _tokenProvider = () => null;
+function setTokenProvider(fn) { if (typeof fn === 'function') _tokenProvider = fn; }
+
 function getHeaders(extra) {
     const headers = Object.assign({ 'Accept': 'application/json' }, extra || {});
-    const token = localStorage.getItem('token');
+    const token = _tokenProvider();
     if (token) headers['Authorization'] = 'Bearer ' + token;
     return headers;
+}
+
+function manejar401(response) {
+    if (response.status === 401) {
+        try { localStorage.removeItem('token'); localStorage.removeItem('user'); } catch (e) {}
+    }
 }
 
 async function get(path) {
     const response = await fetch(API_BASE + path, { headers: getHeaders() });
     if (!response.ok) {
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-        }
+        manejar401(response);
         const err = new Error('HTTP ' + response.status + ' requesting ' + path);
         err.status = response.status;
         throw err;
@@ -31,10 +38,7 @@ async function post(path, body) {
         body: JSON.stringify(body || {})
     });
     if (!response.ok) {
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-        }
+        manejar401(response);
         const err = new Error('HTTP ' + response.status + ' requesting ' + path);
         err.status = response.status;
         try { err.data = await response.json(); } catch (e) {}
@@ -50,10 +54,7 @@ async function put(path, body) {
         body: JSON.stringify(body || {})
     });
     if (!response.ok) {
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-        }
+        manejar401(response);
         const err = new Error('HTTP ' + response.status + ' requesting ' + path);
         err.status = response.status;
         try { err.data = await response.json(); } catch (e) {}
@@ -65,10 +66,7 @@ async function put(path, body) {
 async function del(path) {
     const response = await fetch(API_BASE + path, { method: 'DELETE', headers: getHeaders() });
     if (!response.ok) {
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-        }
+        manejar401(response);
         const err = new Error('HTTP ' + response.status + ' requesting ' + path);
         err.status = response.status;
         throw err;
@@ -76,4 +74,4 @@ async function del(path) {
     return response.json();
 }
 
-window.apiClient = { get, post, put, delete: del };
+window.apiClient = { get, post, put, delete: del, setTokenProvider };

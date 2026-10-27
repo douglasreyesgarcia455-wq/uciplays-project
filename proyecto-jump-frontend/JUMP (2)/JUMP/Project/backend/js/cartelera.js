@@ -10,7 +10,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const listaModal = document.getElementById("modal-lista");
 
     // Fecha inicial: Octubre de 2026
+    // Leer ?fecha=YYYY-MM-DD de la URL para posicionar el calendario en el mes del evento
     let fechaActual = new Date(2026, 9, 1);
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const fechaParam = params.get('fecha');
+        if (fechaParam) {
+            const m = fechaParam.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (m) {
+                fechaActual = new Date(parseInt(m[1]), parseInt(m[2]) - 1, 1);
+            }
+        }
+    } catch (e) {}
 
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
@@ -60,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Crear el HTML de las etiquetas (chips) si hay eventos
             let chipsHTML = "";
             eventosDelDia.forEach(evento => {
-                chipsHTML += `<div class="calendario__evento-chip">${evento.deporte}: ${evento.enfrentamiento}</div>`;
+                chipsHTML += `<div class="calendario__evento-chip">${evento.deporte}: ${(evento.participantes || []).map(p => p.facultad).join(" vs ")}</div>`;
             });
 
             // Crear el elemento de la celda
@@ -88,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
             eventos.forEach(evento => {
                 listaModal.innerHTML += `
                     <div class="evento-detalle">
-                        <h3>${evento.enfrentamiento}</h3>
+                        <h3>${(evento.participantes || []).map(p => p.facultad).join(" vs ")}</h3>
                         <p><strong>Deporte:</strong> ${evento.deporte}</p>
                         <p><strong>Lugar:</strong> ${evento.lugar}</p>
                         <p><strong>Estado:</strong> ${evento.estado}</p>

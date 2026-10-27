@@ -1,12 +1,12 @@
 // index.controller.js — Controlador del index (main-event, mini-ranking, tarjetas).
-// Consume /api/eventos, /api/ranking, /api/facultades con Promise.allSettled.
-// Pinta las 3 secciones del index sin tocar el resto del HTML.
+// Consume /api/eventos, /api/ranking, /api/facultades.
+// Usa evento.participantes (array N:M).
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!window.eventosApi || typeof window.eventosApi.getEventos !== 'function' ||
         !window.rankingApi || typeof window.rankingApi.getRanking !== 'function' ||
         !window.facultadesApi || typeof window.facultadesApi.getFacultades !== 'function') {
-        console.warn('[index.controller] Faltan dependencias: eventosApi, rankingApi o facultadesApi');
+        console.warn('[index.controller] Faltan dependencias');
         return;
     }
 
@@ -14,67 +14,26 @@ document.addEventListener("DOMContentLoaded", () => {
         window.eventosApi.getEventos(),
         window.rankingApi.getRanking(),
         window.facultadesApi.getFacultades()
-    ]).then(([eventosResult, rankingResult, facultadesResult]) => {
-        const eventos = eventosResult.status === 'fulfilled' ? eventosResult.value : [];
-        const ranking = rankingResult.status === 'fulfilled' ? rankingResult.value : [];
-        const facultades = facultadesResult.status === 'fulfilled' ? facultadesResult.value : [];
+    ]).then(([eventosRes, rankingRes, facultadesRes]) => {
+        const eventos = eventosRes.status === 'fulfilled' ? eventosRes.value : [];
+        const ranking = rankingRes.status === 'fulfilled' ? rankingRes.value : [];
+        const facultades = facultadesRes.status === 'fulfilled' ? facultadesRes.value : [];
 
-        if (eventosResult.status !== 'fulfilled') {
-            console.warn('[index.controller] /api/eventos falló:', eventosResult.reason);
-        }
-        if (rankingResult.status !== 'fulfilled') {
-            console.warn('[index.controller] /api/ranking falló:', rankingResult.reason);
-        }
-        if (facultadesResult.status !== 'fulfilled') {
-            console.warn('[index.controller] /api/facultades falló:', facultadesResult.reason);
-        }
-
-        // Mapa nombre → logo_url
         const logosPorNombre = {};
-        facultades.forEach(f => {
-            if (f && f.nombre && f.logo_url) {
-                logosPorNombre[f.nombre] = f.logo_url;
-            }
-        });
-        const logoDe = (facultad) => logosPorNombre[facultad] || '/assets/Logo/respaldo.png';
+        facultades.forEach(f => { if (f && f.nombre && f.logo_url) logosPorNombre[f.nombre] = f.logo_url; });
+        const logoDe = (fac) => logosPorNombre[fac] || '/assets/Logo/respaldo.png';
 
-        // Construye el texto del VS: "FACULTAD DEPORTE EQUIPO".
-        // Temporalmente el equipo se llama "FTL Volleyball", así que se verá
-        // "FTL Volleyball FTL Volleyball". Cuando los equipos tengan nombre propio,
-        // se verá "FTL Volleyball Los Tigres".
-        const nombreVS = (facultad, deporte, equipo) => {
-            return [facultad, deporte, equipo].filter(p => p).join(' ');
-        };
-
-        // Helpers de fecha
         const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
         const MESES_LARGOS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        const parseFecha = (s) => {
-            if (!s) return null;
-            const d = new Date(s + 'T00:00:00');
-            return isNaN(d.getTime()) ? null : d;
-        };
-        const fmtCorta = (s) => {
-            const d = parseFecha(s);
-            if (!d) return s || '—';
-            return d.getDate() + ' ' + MESES[d.getMonth()];
-        };
-        const fmtLarga = (s) => {
-            const d = parseFecha(s);
-            if (!d) return s || '—';
-            return d.getDate() + ' de ' + MESES_LARGOS[d.getMonth()] + ', ' + d.getFullYear();
-        };
+        const parseFecha = (s) => { if (!s) return null; const d = new Date(s + 'T00:00:00'); return isNaN(d.getTime()) ? null : d; };
+        const fmtCorta = (s) => { const d = parseFecha(s); if (!d) return s || '—'; return d.getDate() + ' ' + MESES[d.getMonth()]; };
+        const fmtLarga = (s) => { const d = parseFecha(s); if (!d) return s || '—'; return d.getDate() + ' de ' + MESES_LARGOS[d.getMonth()] + ', ' + d.getFullYear(); };
         const hoy = new Date(); hoy.setHours(0,0,0,0);
 
-        // ============================================================
-        // MAIN EVENT — el evento más próximo (fecha >= hoy)
-        // ============================================================
+        // MAIN EVENT: el más próximo
         const mainEvento = (() => {
             if (!eventos || eventos.length === 0) return null;
-            const conFecha = eventos
-                .map(e => ({ e, d: parseFecha(e.fecha) }))
-                .filter(x => x.d)
-                .sort((a, b) => a.d - b.d);
+            const conFecha = eventos.map(e => ({ e, d: parseFecha(e.fecha) })).filter(x => x.d).sort((a, b) => a.d - b.d);
             if (conFecha.length === 0) return eventos[0];
             const futuro = conFecha.find(x => x.d >= hoy);
             return (futuro || conFecha[conFecha.length - 1]).e;
@@ -89,27 +48,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const $info = document.getElementById('main-event-info');
 
         if (mainEvento) {
-            const eq1 = nombreVS(mainEvento.equipo_local_facultad, mainEvento.deporte, mainEvento.equipo_local_nombre);
-            const eq2 = nombreVS(mainEvento.equipo_visitante_facultad, mainEvento.deporte, mainEvento.equipo_visitante_nombre);
-            const estadoTxt = ({ 'proximo': 'Próximo', 'en vivo': 'En Curso', 'programado': 'Programado' })[mainEvento.estado] || mainEvento.estado || '—';
+            const participantes = mainEvento.participantes || [];
+            const eq1 = participantes[0] || {};
+            const eq2 = participantes[1] || {};
+            const estadoTxt = ({ 'pendiente': 'Próximo', 'en curso': 'En Curso', 'finalizado': 'Finalizado' })[mainEvento.estado] || mainEvento.estado || '—';
             if ($estado) {
                 $estado.textContent = estadoTxt;
-                $estado.className = 'main-event__estado main-event__estado--' + (mainEvento.estado === 'en vivo' ? 'curso' : mainEvento.estado === 'programado' ? 'programado' : 'proximo');
+                $estado.className = 'main-event__estado main-event__estado--' + (mainEvento.estado === 'en curso' ? 'curso' : mainEvento.estado === 'finalizado' ? 'programado' : 'proximo');
             }
-            if ($titulo) $titulo.textContent = (mainEvento.deporte || 'Evento') + ' — ' + (eq1 || '') + ' vs ' + (eq2 || '');
-            if ($logo1) { $logo1.src = logoDe(mainEvento.equipo_local_facultad); $logo1.alt = 'Logo ' + (mainEvento.equipo_local_facultad || ''); }
-            if ($nombre1) $nombre1.textContent = eq1 || '—';
-            if ($logo2) { $logo2.src = logoDe(mainEvento.equipo_visitante_facultad); $logo2.alt = 'Logo ' + (mainEvento.equipo_visitante_facultad || ''); }
-            if ($nombre2) $nombre2.textContent = eq2 || '—';
+            const nombreVS = participantes.map(p => p.facultad).join(' vs ');
+            if ($titulo) $titulo.textContent = (mainEvento.deporte || 'Evento') + ' — ' + nombreVS;
+            if ($logo1) { $logo1.src = logoDe(eq1.facultad); $logo1.alt = 'Logo ' + (eq1.facultad || ''); }
+            if ($nombre1) $nombre1.textContent = (eq1.facultad || '—') + (eq1.posicion ? ' (' + eq1.posicion + 'º)' : '');
+            if ($logo2) { $logo2.src = logoDe(eq2.facultad); $logo2.alt = 'Logo ' + (eq2.facultad || ''); }
+            if ($nombre2) $nombre2.textContent = (eq2.facultad || '—') + (eq2.posicion ? ' (' + eq2.posicion + 'º)' : '');
             if ($info) $info.textContent = '📅 ' + fmtLarga(mainEvento.fecha) + ' • 🕒 ' + (mainEvento.hora || '—') + ' • 📍 ' + (mainEvento.lugar || '—');
         } else {
             if ($titulo) $titulo.textContent = 'No hay eventos disponibles';
             if ($info) $info.textContent = '—';
         }
 
-        // ============================================================
-        // MINI RANKING — primeros 6
-        // ============================================================
+        // MINI RANKING
         const $lista = document.getElementById('mini-ranking-lista');
         if ($lista) {
             $lista.innerHTML = '';
@@ -130,29 +89,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // ============================================================
-        // TARJETAS DE EVENTOS — primeros 3 (orden por fecha ASC)
-        // ============================================================
-        const tarjetas = [
-            { contenedor: 'tarjeta-evento-1' },
-            { contenedor: 'tarjeta-evento-2' },
-            { contenedor: 'tarjeta-evento-3' }
-        ];
-        const eventosOrdenados = (eventos || [])
-            .map(e => ({ e, d: parseFecha(e.fecha) }))
-            .filter(x => x.d)
-            .sort((a, b) => a.d - b.d)
-            .map(x => x.e);
-
+        // TARJETAS DE EVENTOS
+        const tarjetas = [{ contenedor: 'tarjeta-evento-1' }, { contenedor: 'tarjeta-evento-2' }, { contenedor: 'tarjeta-evento-3' }];
+        const eventosOrdenados = (eventos || []).map(e => ({ e, d: parseFecha(e.fecha) })).filter(x => x.d).sort((a, b) => a.d - b.d).map(x => x.e);
         tarjetas.forEach((t, i) => {
             const $c = document.getElementById(t.contenedor);
             if (!$c) return;
             const ev = eventosOrdenados[i];
             if (!ev) { $c.innerHTML = ''; return; }
-            const eq1 = nombreVS(ev.equipo_local_facultad, ev.deporte, ev.equipo_local_nombre);
-            const eq2 = nombreVS(ev.equipo_visitante_facultad, ev.deporte, ev.equipo_visitante_nombre);
-            const estadoClase = ev.estado === 'en vivo' ? 'curso' : ev.estado === 'programado' ? 'programado' : 'proximo';
-            const estadoTitulo = ({ 'proximo': 'Próximo', 'en vivo': 'En curso', 'programado': 'Programado' })[ev.estado] || ev.estado || '';
+            const participantes = ev.participantes || [];
+            const eq1 = participantes[0] || {};
+            const eq2 = participantes[1] || {};
+            const estadoClase = ev.estado === 'en curso' ? 'curso' : ev.estado === 'finalizado' ? 'programado' : 'proximo';
+            const estadoTitulo = ({ 'pendiente': 'Próximo', 'en curso': 'En curso', 'finalizado': 'Finalizado' })[ev.estado] || ev.estado || '';
             $c.innerHTML =
                 '<a href="cartelera.html?fecha=' + (ev.fecha || '') + '" class="tarjeta-evento">' +
                     '<header class="tarjeta-evento__cabecera">' +
@@ -160,9 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         '<span class="tarjeta-evento__estado tarjeta-evento__estado--' + estadoClase + '" title="' + estadoTitulo + '"></span>' +
                     '</header>' +
                     '<div class="tarjeta-evento__cuerpo">' +
-                        '<img class="tarjeta-evento__logo" src="' + logoDe(ev.equipo_local_facultad) + '" alt="Logo ' + (ev.equipo_local_facultad || '') + '">' +
+                        '<img class="tarjeta-evento__logo" src="' + logoDe(eq1.facultad) + '" alt="Logo ' + (eq1.facultad || '') + '">' +
                         '<span class="tarjeta-evento__vs">VS</span>' +
-                        '<img class="tarjeta-evento__logo" src="' + logoDe(ev.equipo_visitante_facultad) + '" alt="Logo ' + (ev.equipo_visitante_facultad || '') + '">' +
+                        '<img class="tarjeta-evento__logo" src="' + logoDe(eq2.facultad) + '" alt="Logo ' + (eq2.facultad || '') + '">' +
                     '</div>' +
                     '<footer class="tarjeta-evento__pie">' +
                         '<span class="tarjeta-evento__fecha">📅 ' + fmtCorta(ev.fecha) + ' • ' + (ev.hora || '—') + '</span>' +
