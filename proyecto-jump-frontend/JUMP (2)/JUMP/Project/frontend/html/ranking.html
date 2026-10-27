@@ -68,116 +68,7 @@
                             <th>Puntos</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Fila de ejemplo 1 -->
-                        <tr>
-                            <td class="ranking__posicion">1</td>
-                            <td>
-                                <div class="ranking__facultad">
-                                    <!-- Espacio reservado para el logo -->
-                                    <img class="ranking__logo" src="/assets/logos/fei-logo.png" alt="Logo">
-                                    <span class="ranking__nombre">FEI</span>
-                                </div>
-                            </td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="ranking__puntos-total">77</td>
-                        </tr>
-                        
-                        <!-- Fila de ejemplo 2 -->
-                        <tr>
-                            <td class="ranking__posicion">2</td>
-                            <td>
-                                <div class="ranking__facultad">
-                                    <img class="ranking__logo" src="/assets/logos/fte-logo.png" alt="Logo">
-                                    <span class="ranking__nombre">FTE</span>
-                                </div>
-                            </td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>3</td>
-                            <td class="ranking__puntos-total">40</td>
-                        </tr>
-
-                        <!-- Fila 3: FICI -->
-<tr>
-    <td class="ranking__posicion">3</td>
-    <td>
-        <div class="ranking__facultad">
-            <img class="ranking__logo" src="/assets/logos/fici-logo.png" alt="Logo">
-            <span class="ranking__nombre">FICI</span>
-        </div>
-    </td>
-    <td>0</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td>2</td>
-    <td class="ranking__puntos-total">22</td>
-</tr>
-
-<!-- Fila 4: CITI -->
-<tr>
-    <td class="ranking__posicion">4</td>
-    <td>
-        <div class="ranking__facultad">
-            <img class="ranking__logo" src="/assets/logos/citi-logo.png" alt="Logo">
-            <span class="ranking__nombre">CITI</span>
-        </div>
-    </td>
-    <td>0</td>
-    <td>0</td>
-    <td>2</td>
-    <td>1</td>
-    <td>0</td>
-    <td>3</td>
-    <td class="ranking__puntos-total">16</td>
-</tr>
-
-<!-- Fila 5: FCE -->
-<tr>
-    <td class="ranking__posicion">5</td>
-    <td>
-        <div class="ranking__facultad">
-            <img class="ranking__logo" src="/assets/logos/fce-logo.png" alt="Logo">
-            <span class="ranking__nombre">FCE</span>
-        </div>
-    </td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>2</td>
-    <td>2</td>
-    <td>4</td>
-    <td class="ranking__puntos-total">6</td>
-</tr>
-
-<!-- Fila 6: FTI -->
-<tr>
-    <td class="ranking__posicion">6</td>
-    <td>
-        <div class="ranking__facultad">
-            <img class="ranking__logo" src="/assets/logos/fti-logo.png" alt="Logo">
-            <span class="ranking__nombre">FTI</span>
-        </div>
-    </td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>1</td>
-    <td>1</td>
-    <td class="ranking__puntos-total">1</td>
-</tr>
-                    </tbody>
+                    <tbody id="ranking-table-body"></tbody>
                 </table>
             </div>
 
@@ -238,5 +129,9 @@
     </div>
 </div>
 
+    <script src="/jump/frontend/js/api-client.js" defer></script>
+    <script src="/jump/frontend/js/ranking.api.js" defer></script>
+    <script src="/jump/frontend/js/facultades.api.js" defer></script>
+    <script src="/jump/frontend/js/ranking.controller.js" defer></script>
 </body>
 </html>
