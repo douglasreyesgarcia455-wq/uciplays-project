@@ -50,13 +50,17 @@ router.get('/', async (req, res) => {
     try {
         const eventos = await db.query(
             `SELECT ev.id, d.nombre AS deporte,
+                    fl.nombre AS equipo_local_facultad,
                     el.nombre AS equipo_local_nombre,
+                    fv.nombre AS equipo_visitante_facultad,
                     ev2.nombre AS equipo_visitante_nombre,
                     ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles, ev.probabilidad
              FROM eventos ev
              JOIN deportes d ON d.id = ev.deporte_id
              JOIN equipos el ON el.id = ev.equipo_local_id
+             JOIN facultades fl ON fl.id = el.facultad_id
              JOIN equipos ev2 ON ev2.id = ev.equipo_visitante_id
+             JOIN facultades fv ON fv.id = ev2.facultad_id
              ORDER BY ev.fecha ASC`
         );
         res.json(eventos);
@@ -71,13 +75,17 @@ router.get('/:id', async (req, res) => {
     try {
         const rows = await db.query(
             `SELECT ev.id, d.nombre AS deporte,
+                    fl.nombre AS equipo_local_facultad,
                     el.nombre AS equipo_local_nombre,
+                    fv.nombre AS equipo_visitante_facultad,
                     ev2.nombre AS equipo_visitante_nombre,
                     ev.fecha, ev.hora, ev.lugar, ev.estado, ev.detalles, ev.probabilidad
              FROM eventos ev
              JOIN deportes d ON d.id = ev.deporte_id
              JOIN equipos el ON el.id = ev.equipo_local_id
+             JOIN facultades fl ON fl.id = el.facultad_id
              JOIN equipos ev2 ON ev2.id = ev.equipo_visitante_id
+             JOIN facultades fv ON fv.id = ev2.facultad_id
              WHERE ev.id = ?`, [req.params.id]
         );
         if (!rows || rows.length === 0) return res.status(404).json({ error: 'Evento no encontrado' });
