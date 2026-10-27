@@ -301,3 +301,16 @@
     background-color: var(--color-alert-bg);
     color: var(--color-alert); /* El icono se vuelve rojo al hacer hover */
 }
+/* Error inline del login (modal de administración) */
+.modal-admin__error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    border: 1px solid #f5c6cb;
+}
+.modal-admin__error--visible {
+    display: block !important;
+}
