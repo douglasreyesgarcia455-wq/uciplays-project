@@ -44,6 +44,22 @@ router.post('/', verificarToken, async (req, res) => {
 });
 
 // DELETE /api/deportes/:id
+router.put('/:id', verificarToken, async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const nombre = String((req.body || {}).nombre || '').trim();
+        if (!nombre || nombre.length < 2) return res.status(400).json({ error: 'Nombre inválido' });
+        const existe = await db.query('SELECT id FROM deportes WHERE LOWER(nombre) = LOWER(?) AND id != ?', [nombre, id]);
+        if (existe && existe.length > 0) return res.status(409).json({ error: 'Ya existe otro deporte con ese nombre' });
+        await db.query('UPDATE deportes SET nombre = ? WHERE id = ?', [nombre, id]);
+        await registrarAuditoria(req, 'editar', 'deporte', id, { nombre });
+        res.json({ message: 'Actualizado' });
+    } catch (error) {
+        console.error('Error PUT /deportes/:id:', error);
+        res.status(500).json({ error: 'Error al editar deporte' });
+    }
+});
+
 router.delete('/:id', verificarToken, async (req, res) => {
     try {
         const id = parseInt(req.params.id);

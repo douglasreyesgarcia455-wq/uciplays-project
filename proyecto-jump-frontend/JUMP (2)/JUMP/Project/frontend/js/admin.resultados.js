@@ -199,7 +199,12 @@ window.adminResultados = (function () {
             window.adminToast.mostrar('Asigna una posición única a cada equipo', 'error');
             return;
         }
-        if (!confirm('¿Guardar resultado? El evento pasará a finalizado.')) return;
+        const okGuardar = await window.adminConfirm.mostrar({
+            titulo: 'Guardar resultado',
+            mensaje: '¿Guardar resultado? El evento pasará a finalizado.',
+            textoAceptar: 'Guardar'
+        });
+        if (!okGuardar) return;
         try {
             await window.apiClient.post('/eventos/' + state.eventoSeleccionado.id + '/resultado', { resultados });
             window.adminToast.mostrar('Resultado guardado correctamente');

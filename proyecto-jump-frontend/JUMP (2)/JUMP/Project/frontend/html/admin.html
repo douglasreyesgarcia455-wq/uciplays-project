@@ -13,6 +13,8 @@
     <script src="/jump/frontend/js/facultades.api.js" defer></script>
     <script src="/jump/frontend/js/deportes.api.js" defer></script>
     <script src="/jump/frontend/js/equipos.api.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script src="/jump/frontend/js/admin.toast.js" defer></script>
     <script src="/jump/frontend/js/admin.paginado.js" defer></script>
     <script src="/jump/frontend/js/admin.validacion.js" defer></script>
@@ -23,6 +25,9 @@
     <script src="/jump/frontend/js/admin.participantes.js" defer></script>
     <script src="/jump/frontend/js/admin.sanciones.js" defer></script>
     <script src="/jump/frontend/js/admin.sistema.js" defer></script>
+    <script src="/jump/frontend/js/admin.export.js" defer></script>
+    <script src="/jump/frontend/js/admin.confirm.js" defer></script>
+    <script src="/jump/frontend/js/admin.prompt.js" defer></script>
     <script src="/jump/frontend/js/admin.controller.js" defer></script>
     <link rel="shortcut icon" href="/assets/favicon/favicon.png" type="image/x-icon">
     <title>Panel de Administración - JUMP</title>
@@ -77,7 +82,7 @@
             <section id="eventos" class="admin-tab active-tab">
                 <header class="admin-panel__cabecera">
                     <h1 class="admin-panel__titulo">Gestión de Eventos</h1>
-                    <button class="admin-btn admin-btn--exportar">Exportar PDF</button>
+                    <button type="button" id="btn-export-pdf" class="admin-btn admin-btn--exportar">Exportar PDF</button>
                 </header>
                 
                 <div class="admin-seccion">
@@ -403,6 +408,33 @@
 
 <!-- CONTENEDOR DE TOASTS -->
 <div class="toast-container" id="toast-container"></div>
+
+
+<!-- MODAL DE CONFIRMACIÓN GENÉRICO -->
+<div id="confirm-modal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal__contenido">
+        <h2 class="confirm-modal__titulo" id="confirm-titulo">¿Confirmar acción?</h2>
+        <p class="confirm-modal__mensaje" id="confirm-mensaje">—</p>
+        <div class="confirm-modal__botones">
+            <button type="button" id="confirm-cancelar" class="admin-btn">Cancelar</button>
+            <button type="button" id="confirm-aceptar" class="admin-btn admin-btn--primario">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL DE PROMPT GENÉRICO (reemplaza prompt() nativo) -->
+<div id="prompt-modal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal__contenido">
+        <h2 class="confirm-modal__titulo" id="prompt-titulo">Editar</h2>
+        <div id="prompt-campos"></div>
+        <div id="prompt-error" class="admin-form__error-msg" style="display:none; margin-bottom:0.5rem;"></div>
+        <div class="confirm-modal__botones">
+            <button type="button" id="prompt-cancelar" class="admin-btn">Cancelar</button>
+            <button type="button" id="prompt-aceptar" class="admin-btn admin-btn--primario">Guardar</button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

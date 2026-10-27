@@ -101,7 +101,12 @@ window.adminSanciones = (function () {
     }
 
     async function borrar(id) {
-        if (!confirm('¿Eliminar esta sanción?')) return;
+        const ok = await window.adminConfirm.mostrar({
+            titulo: 'Eliminar sanción',
+            mensaje: '¿Eliminar esta sanción?',
+            textoAceptar: 'Eliminar'
+        });
+        if (!ok) return;
         try {
             await window.apiClient.delete('/sanciones/' + id);
             window.adminToast.mostrar('Sanción eliminada');

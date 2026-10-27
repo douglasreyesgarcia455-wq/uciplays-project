@@ -482,3 +482,38 @@
     padding: 0.3rem 0.7rem;
     font-size: 0.85rem;
 }
+
+/* Modal de confirmación genérico */
+.confirm-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.confirm-modal__contenido {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+.confirm-modal__titulo {
+    margin: 0 0 0.8rem;
+    font-size: 1.2rem;
+    color: #1a1088;
+}
+.confirm-modal__mensaje {
+    margin: 0 0 1.5rem;
+    color: #444;
+    line-height: 1.4;
+}
+.confirm-modal__botones {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+}

@@ -91,6 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.adminParticipantes.init();
     window.adminSanciones.init();
     window.adminSistema.init();
+    window.adminExport.init();
+    window.adminConfirm.init();
+    window.adminPrompt.init();
 
     if (window.authApi.isLoggedIn()) {
         ocultarLogin();

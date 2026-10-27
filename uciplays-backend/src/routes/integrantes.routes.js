@@ -69,6 +69,31 @@ router.post('/', verificarToken, async (req, res) => {
     }
 });
 
+router.put('/:id', verificarToken, async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const body = req.body || {};
+        const nombre = String(body.nombre || '').trim();
+        const ci = String(body.ci || '').trim();
+        const matricula = String(body.matricula || '').trim();
+        if (!nombre || nombre.length < 2) return res.status(400).json({ error: 'Nombre inválido' });
+        if (!ci) return res.status(400).json({ error: 'CI requerida' });
+        if (!matricula) return res.status(400).json({ error: 'Matrícula requerida' });
+
+        const existeCI = await db.query('SELECT id FROM integrantes WHERE ci = ? AND id != ?', [ci, id]);
+        if (existeCI && existeCI.length > 0) return res.status(409).json({ error: 'CI ya registrada en otro integrante' });
+        const existeMat = await db.query('SELECT id FROM integrantes WHERE matricula = ? AND id != ?', [matricula, id]);
+        if (existeMat && existeMat.length > 0) return res.status(409).json({ error: 'Matrícula ya registrada en otro integrante' });
+
+        await db.query('UPDATE integrantes SET nombre = ?, ci = ?, matricula = ? WHERE id = ?', [nombre, ci, matricula, id]);
+        await registrarAuditoria(req, 'editar', 'integrante', id, { nombre });
+        res.json({ message: 'Actualizado' });
+    } catch (error) {
+        console.error('Error PUT /integrantes/:id:', error);
+        res.status(500).json({ error: 'Error al editar integrante' });
+    }
+});
+
 router.delete('/:id', verificarToken, async (req, res) => {
     try {
         const id = parseInt(req.params.id);

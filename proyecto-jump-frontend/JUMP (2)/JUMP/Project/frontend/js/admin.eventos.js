@@ -326,7 +326,12 @@ window.adminEventos = (function () {
     }
 
     async function borrar(id) {
-        if (!confirm('¿Eliminar este evento?')) return;
+        const okBorrar = await window.adminConfirm.mostrar({
+            titulo: 'Eliminar evento',
+            mensaje: '¿Eliminar este evento? Esta acción no se puede deshacer.',
+            textoAceptar: 'Eliminar'
+        });
+        if (!okBorrar) return;
         try {
             await window.apiClient.delete('/eventos/' + id);
             window.adminToast.mostrar('Evento eliminado correctamente');
@@ -340,18 +345,47 @@ window.adminEventos = (function () {
     async function iniciar(id) {
         const ev = state.eventos.find(e => e.id === id);
         if (!ev) return;
-        if (!confirm('¿Iniciar el evento? Pasará a "en curso".')) return;
+        const okIniciar = await window.adminConfirm.mostrar({
+            titulo: 'Iniciar evento',
+            mensaje: '¿Iniciar el evento? Pasará a "en curso". Si la fecha/hora es distinta a la actual, se actualizará.',
+            textoAceptar: 'Iniciar'
+        });
+        if (!okIniciar) return;
         try {
+            // Calcular fecha/hora actual del sistema
+            const ahora = new Date();
+            const yy = ahora.getFullYear();
+            const mm = String(ahora.getMonth() + 1).padStart(2, '0');
+            const dd = String(ahora.getDate()).padStart(2, '0');
+            const hh = String(ahora.getHours()).padStart(2, '0');
+            const mi = String(ahora.getMinutes()).padStart(2, '0');
+            const fechaHoy = yy + '-' + mm + '-' + dd;
+            const horaAhora = hh + ':' + mi;
+
+            // Determinar si hay que actualizar
+            let fechaFinal = ev.fecha;
+            let horaFinal = ev.hora;
+            let fechaActualizada = false;
+            if (ev.fecha !== fechaHoy) {
+                fechaFinal = fechaHoy;
+                horaFinal = horaAhora;
+                fechaActualizada = true;
+            }
+
             const participantes = (ev.participantes || []).map(p => ({ equipo_id: p.equipo_id }));
             await window.apiClient.put('/eventos/' + id, {
                 deporte_id: ev.deporte_id || null,
-                fecha: ev.fecha,
-                hora: ev.hora,
+                fecha: fechaFinal,
+                hora: horaFinal,
                 lugar: ev.lugar,
                 estado: 'en curso',
                 participantes
             });
-            window.adminToast.mostrar('Evento iniciado');
+            if (fechaActualizada) {
+                window.adminToast.mostrar('Evento iniciado. Fecha/hora actualizadas a hoy (' + fechaHoy + ' ' + horaAhora + ')');
+            } else {
+                window.adminToast.mostrar('Evento iniciado');
+            }
             await state.onRecargar();
         } catch (e) {
             if (e.status === 401) { state.onLogin(); return; }
@@ -359,5 +393,9 @@ window.adminEventos = (function () {
         }
     }
 
-    return { init, actualizar };
+    function obtenerEventos() {
+        return state ? state.eventos : [];
+    }
+
+    return { init, actualizar, obtenerEventos };
 })();
