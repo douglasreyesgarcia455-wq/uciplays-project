@@ -30,4 +30,7 @@ proyecto-jump-frontend/JUMP\ (2)/JUMP/*.png
 *.doc
 
 # NO ignorar los logos del frontend nuevo (se versionan)
-!proyecto-jump-frontend/JUMP\ (2)/JUMP/Project/assets/**/*.png*.bak_*
+!proyecto-jump-frontend/JUMP\ (2)/JUMP/Project/assets/**/*.png
+
+# Backups
+*.bak_*
