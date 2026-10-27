@@ -34,3 +34,5 @@ proyecto-jump-frontend/JUMP\ (2)/JUMP/*.png
 
 # Backups
 *.bak_*
+node
+**/node
