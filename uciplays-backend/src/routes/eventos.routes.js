@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const { verificarToken, verificarRol } = require('../middleware/authMiddleware');
+const { registrarAuditoria } = require('../middleware/auditoriaHelper');
 
 // Extrae el .id de la primera fila de un db.query. Devuelve null si no hay filas.
 async function obtenerId(query, params) {
@@ -97,7 +99,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST / → crear evento. Acepta IDs directos o (deporte + enfrentamiento) texto.
-router.post('/', async (req, res) => {
+router.post('/', verificarToken, async (req, res) => {
     try {
         const body = req.body || {};
         const deporteId = await resolverDeporteId(body);
@@ -114,7 +116,10 @@ router.post('/', async (req, res) => {
             [deporteId, localId, visitanteId, body.fecha || null, body.hora || null, body.lugar || null,
              body.estado || 'proximo', body.detalles || '', parseInt(body.probabilidad) || 50]
         );
-        res.status(201).json({ message: 'Creado' });
+        const idRows = await db.query('SELECT last_insert_rowid() AS id');
+        const nuevoId = idRows && idRows[0] ? idRows[0].id : null;
+        await registrarAuditoria(req, 'crear', 'evento', nuevoId, { deporteId, localId, visitanteId, fecha: body.fecha });
+        res.status(201).json({ message: 'Creado', id: nuevoId });
     } catch (error) {
         console.error('Error POST /eventos:', error);
         res.status(500).json({ error: error.message });
@@ -122,7 +127,7 @@ router.post('/', async (req, res) => {
 });
 
 // PUT /:id → actualizar evento. Mismo parseo que POST.
-router.put('/:id', async (req, res) => {
+router.put('/:id', verificarToken, async (req, res) => {
     try {
         const body = req.body || {};
         const deporteId = await resolverDeporteId(body);
@@ -140,6 +145,7 @@ router.put('/:id', async (req, res) => {
             [deporteId, localId, visitanteId, body.fecha || null, body.hora || null, body.lugar || null,
              body.estado || 'proximo', body.detalles || '', parseInt(body.probabilidad) || 50, req.params.id]
         );
+        await registrarAuditoria(req, 'editar', 'evento', parseInt(req.params.id), { deporteId, localId, visitanteId });
         res.json({ message: 'Actualizado' });
     } catch (error) {
         console.error('Error PUT /eventos/:id:', error);
@@ -148,9 +154,10 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /:id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verificarToken, async (req, res) => {
     try {
         await db.query('DELETE FROM eventos WHERE id = ?', [req.params.id]);
+        await registrarAuditoria(req, 'borrar', 'evento', parseInt(req.params.id), null);
         res.json({ message: 'Eliminado' });
     } catch (error) {
         console.error('Error DELETE /eventos/:id:', error);

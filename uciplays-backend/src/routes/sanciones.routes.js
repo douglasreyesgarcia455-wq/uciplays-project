@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const { verificarToken, verificarRol } = require('../middleware/authMiddleware');
+const { registrarAuditoria } = require('../middleware/auditoriaHelper');
 
 router.get('/', async (req, res) => {
     try {

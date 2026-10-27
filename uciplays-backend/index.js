@@ -8,6 +8,9 @@ const facultadesRoutes = require('./src/routes/facultades.routes');
 const eventosRoutes = require('./src/routes/eventos.routes');
 const sancionesRoutes = require('./src/routes/sanciones.routes');
 const integrantesRoutes = require('./src/routes/integrantes.routes');
+const authRoutes = require('./src/routes/auth.routes');
+const deportesRoutes = require('./src/routes/deportes.routes');
+const equiposRoutes = require('./src/routes/equipos.routes');
 const { configurarEstaticos } = require('./src/config/static');
 
 const app = express();
@@ -69,6 +72,39 @@ app.use('/api/facultades', facultadesRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/sanciones', sancionesRoutes);
 app.use('/api/integrantes', integrantesRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/deportes', deportesRoutes);
+app.use('/api/equipos', equiposRoutes);
+
+
+// ===== Rutas inline de auditoría y backup =====
+const { verificarToken, verificarRol } = require('./src/middleware/authMiddleware');
+const path = require('path');
+const fs = require('fs');
+
+app.get('/api/auditoria', verificarToken, verificarRol(['admin']), async (req, res) => {
+    try {
+        const { limite } = req.query;
+        const n = parseInt(limite) || 100;
+        const rows = await db.query('SELECT * FROM auditoria ORDER BY fecha DESC LIMIT ?', [n]);
+        res.json(rows);
+    } catch (e) {
+        console.error('Error GET /auditoria:', e);
+        res.status(500).json({ error: 'Error al obtener auditoría' });
+    }
+});
+
+app.get('/api/backup', verificarToken, verificarRol(['admin']), (req, res) => {
+    try {
+        const dbPath = path.resolve(__dirname, 'database.sqlite');
+        if (!fs.existsSync(dbPath)) return res.status(404).json({ error: 'No hay BD para respaldar' });
+        res.download(dbPath, 'uciplays-backup-' + new Date().toISOString().slice(0, 10) + '.sqlite');
+    } catch (e) {
+        console.error('Error GET /backup:', e);
+        res.status(500).json({ error: 'Error al generar backup' });
+    }
+});
+// ===== Fin rutas inline =====
 
 const PORT = 4000;
 app.listen(PORT, () => console.log(`🚀 Backend listo en: http://localhost:${PORT}`));
