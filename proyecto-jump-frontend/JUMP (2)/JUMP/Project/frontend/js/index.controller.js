@@ -36,7 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 logosPorNombre[f.nombre] = f.logo_url;
             }
         });
-        const logoDe = (nombre) => logosPorNombre[nombre] || '/assets/Logo/respaldo.png';
+        const logoDe = (facultad) => logosPorNombre[facultad] || '/assets/Logo/respaldo.png';
+
+        // Construye el texto del VS: "FACULTAD DEPORTE EQUIPO".
+        // Temporalmente el equipo se llama "FTL Volleyball", así que se verá
+        // "FTL Volleyball FTL Volleyball". Cuando los equipos tengan nombre propio,
+        // se verá "FTL Volleyball Los Tigres".
+        const nombreVS = (facultad, deporte, equipo) => {
+            return [facultad, deporte, equipo].filter(p => p).join(' ');
+        };
 
         // Helpers de fecha
         const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -81,16 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const $info = document.getElementById('main-event-info');
 
         if (mainEvento) {
-            const [eq1, eq2] = String(mainEvento.enfrentamiento || '').split(' vs ');
+            const eq1 = nombreVS(mainEvento.equipo_local_facultad, mainEvento.deporte, mainEvento.equipo_local_nombre);
+            const eq2 = nombreVS(mainEvento.equipo_visitante_facultad, mainEvento.deporte, mainEvento.equipo_visitante_nombre);
             const estadoTxt = ({ 'proximo': 'Próximo', 'en vivo': 'En Curso', 'programado': 'Programado' })[mainEvento.estado] || mainEvento.estado || '—';
             if ($estado) {
                 $estado.textContent = estadoTxt;
                 $estado.className = 'main-event__estado main-event__estado--' + (mainEvento.estado === 'en vivo' ? 'curso' : mainEvento.estado === 'programado' ? 'programado' : 'proximo');
             }
-            if ($titulo) $titulo.textContent = (mainEvento.deporte || 'Evento') + ' — ' + (mainEvento.enfrentamiento || '');
-            if ($logo1) { $logo1.src = logoDe(eq1); $logo1.alt = 'Logo ' + eq1; }
+            if ($titulo) $titulo.textContent = (mainEvento.deporte || 'Evento') + ' — ' + (eq1 || '') + ' vs ' + (eq2 || '');
+            if ($logo1) { $logo1.src = logoDe(mainEvento.equipo_local_facultad); $logo1.alt = 'Logo ' + (mainEvento.equipo_local_facultad || ''); }
             if ($nombre1) $nombre1.textContent = eq1 || '—';
-            if ($logo2) { $logo2.src = logoDe(eq2); $logo2.alt = 'Logo ' + eq2; }
+            if ($logo2) { $logo2.src = logoDe(mainEvento.equipo_visitante_facultad); $logo2.alt = 'Logo ' + (mainEvento.equipo_visitante_facultad || ''); }
             if ($nombre2) $nombre2.textContent = eq2 || '—';
             if ($info) $info.textContent = '📅 ' + fmtLarga(mainEvento.fecha) + ' • 🕒 ' + (mainEvento.hora || '—') + ' • 📍 ' + (mainEvento.lugar || '—');
         } else {
@@ -140,7 +149,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!$c) return;
             const ev = eventosOrdenados[i];
             if (!ev) { $c.innerHTML = ''; return; }
-            const [eq1, eq2] = String(ev.enfrentamiento || '').split(' vs ');
+            const eq1 = nombreVS(ev.equipo_local_facultad, ev.deporte, ev.equipo_local_nombre);
+            const eq2 = nombreVS(ev.equipo_visitante_facultad, ev.deporte, ev.equipo_visitante_nombre);
             const estadoClase = ev.estado === 'en vivo' ? 'curso' : ev.estado === 'programado' ? 'programado' : 'proximo';
             const estadoTitulo = ({ 'proximo': 'Próximo', 'en vivo': 'En curso', 'programado': 'Programado' })[ev.estado] || ev.estado || '';
             $c.innerHTML =
@@ -150,9 +160,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         '<span class="tarjeta-evento__estado tarjeta-evento__estado--' + estadoClase + '" title="' + estadoTitulo + '"></span>' +
                     '</header>' +
                     '<div class="tarjeta-evento__cuerpo">' +
-                        '<img class="tarjeta-evento__logo" src="' + logoDe(eq1) + '" alt="Logo ' + eq1 + '">' +
+                        '<img class="tarjeta-evento__logo" src="' + logoDe(ev.equipo_local_facultad) + '" alt="Logo ' + (ev.equipo_local_facultad || '') + '">' +
                         '<span class="tarjeta-evento__vs">VS</span>' +
-                        '<img class="tarjeta-evento__logo" src="' + logoDe(eq2) + '" alt="Logo ' + eq2 + '">' +
+                        '<img class="tarjeta-evento__logo" src="' + logoDe(ev.equipo_visitante_facultad) + '" alt="Logo ' + (ev.equipo_visitante_facultad || '') + '">' +
                     '</div>' +
                     '<footer class="tarjeta-evento__pie">' +
                         '<span class="tarjeta-evento__fecha">📅 ' + fmtCorta(ev.fecha) + ' • ' + (ev.hora || '—') + '</span>' +
