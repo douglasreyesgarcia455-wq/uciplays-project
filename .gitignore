@@ -36,3 +36,4 @@ proyecto-jump-frontend/JUMP\ (2)/JUMP/*.png
 *.bak_*
 node
 **/node
+*.bak
