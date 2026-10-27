@@ -77,6 +77,25 @@ window.adminResultados = (function () {
         if ($btn) {
             $btn.addEventListener('click', guardarResultado);
         }
+
+        const $btnActualizar = document.getElementById('btn-actualizar-resultados');
+        if ($btnActualizar) {
+            $btnActualizar.addEventListener('click', async () => {
+                $btnActualizar.disabled = true;
+                $btnActualizar.textContent = 'Actualizando...';
+                try {
+                    await cargarEventosYRanking();
+                    window.adminToast.mostrar('Datos actualizados');
+                } catch (e) {
+                    if (e.status !== 401) {
+                        window.adminToast.mostrar('Error al actualizar: ' + e.message, 'error');
+                    }
+                } finally {
+                    $btnActualizar.disabled = false;
+                    $btnActualizar.textContent = 'Actualizar';
+                }
+            });
+        }
     }
 
     function renderParticipantes() {
