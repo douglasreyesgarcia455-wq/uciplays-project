@@ -1,12 +1,10 @@
 // admin.eventos.js — Controlador del CRUD de eventos.
-// Delega la tabla de participantes en admin.eventos.participantes.js.
-// Delega el paginado en admin.paginado.js.
 
 window.adminEventos = (function () {
     let state = null;
     let paginado = null;
 
-    function init(ctx) {
+    async function init(ctx) {
         state = {
             eventos: ctx.eventos || [],
             deportes: ctx.deportes || [],
@@ -15,10 +13,19 @@ window.adminEventos = (function () {
             onLogin: ctx.onLogin || (() => {})
         };
 
-        // Inicializar módulo de participantes
-        window.adminEventosParticipantes.init({ equipos: state.equipos, deportes: state.deportes });
+        // Forzar carga de deportes desde la API si vienen vacíos
+        if (!state.deportes || state.deportes.length === 0) {
+            try {
+                state.deportes = await window.apiClient.get('/deportes');
+            } catch (e) {
+                console.error('Error cargando deportes:', e);
+            }
+        }
 
+        // Inicializar módulo de participantes CON los deportes ya cargados
+        window.adminEventosParticipantes.init({ equipos: state.equipos, deportes: state.deportes });
         window.adminEventosParticipantes.poblarDeporte();
+        
         enlazarBotones();
         initPaginado();
         renderLista(state.eventos);
@@ -241,7 +248,7 @@ window.adminEventos = (function () {
         if (!ev) return;
         const okIniciar = await window.adminConfirm.mostrar({
             titulo: 'Iniciar evento',
-            mensaje: '¿Iniciar el evento? Pasará a "en curso". Si la fecha/hora es distinta a la actual, se actualizará.',
+            mensaje: '¿Iniciar el evento? Pasará a "en curso".',
             textoAceptar: 'Iniciar'
         });
         if (!okIniciar) return;
