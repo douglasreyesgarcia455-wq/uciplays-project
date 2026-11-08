@@ -40,6 +40,16 @@ Base de datos PostgreSQL
 | `core/authentication.py` | Verificar JWT y rol `admin` |
 | `core/migrations/` | Crear o modificar tablas PostgreSQL |
 
+## Paquetes explícitos MVT
+
+- `core/modelo/`: punto de entrada explícito para los modelos del dominio.
+- `core/vista/sp_vistas.py`: clases controladoras y adaptadores de vistas.
+- `core/plantilla/fr_plantilla.py`: formularios asociados a las plantillas.
+- `templates/core/`: archivos HTML de plantilla.
+
+Los módulos `sp_` y `fr_` reutilizan las implementaciones por recurso para
+evitar duplicación y conservar bajo acoplamiento.
+
 ## Flujo de una consulta pública
 
 1. El frontend solicita `/api/public/eventos`.

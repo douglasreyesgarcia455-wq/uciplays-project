@@ -22,7 +22,20 @@ from .views_ranking import (
     SancionApiView,
     SancionDeleteApiView,
 )
-from .views_auth import AuthLoginView, AuthLogoutView, AuthMeView, AuditoriaApiView
+from .views_auth import AuditoriaApiView
+from .vista.sp_vistas import (
+    AuthLoginView,
+    AuthLogoutView,
+    AuthMeView,
+    DeportesEquiposView,
+    EventoApiView,
+    EventoIniciarApiView,
+    EventoResultadoApiView,
+    EventosTemplateView,
+    FacultadView,
+    IntegrantesTemplateView,
+    RankingSancionesTemplateView,
+)
 
 
 urlpatterns = [

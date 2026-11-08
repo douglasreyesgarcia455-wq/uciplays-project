@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from .forms_integrantes import IntegranteForm
+from .plantilla.fr_plantilla import IntegranteForm
 from .models import Integrante
 from .serializers_integrantes import IntegranteSerializer
 from .services_integrantes import IntegranteService
