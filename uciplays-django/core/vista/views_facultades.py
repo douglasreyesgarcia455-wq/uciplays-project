@@ -6,11 +6,11 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from .plantilla.fr_plantilla import FacultadForm
-from .models import Facultad
-from .serializers import FacultadSerializer
-from .services import FacultadService
-from .authentication import api_admin_required
+from ..plantilla.fr_plantilla import FacultadForm
+from ..modelo.models import Facultad
+from ..serializers import FacultadSerializer
+from ..services import FacultadService
+from ..authentication import api_admin_required
 
 
 class FacultadView(View):

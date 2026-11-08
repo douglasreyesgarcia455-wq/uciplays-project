@@ -2,10 +2,10 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views import View
 
-from .models import Deporte, Equipo
-from .serializers_deportes import DeporteSerializer, EquipoSerializer
-from .services_deportes import DeporteService, EquipoService
-from .authentication import api_admin_required
+from ..modelo.models import Deporte, Equipo
+from ..serializers_deportes import DeporteSerializer, EquipoSerializer
+from ..services_deportes import DeporteService, EquipoService
+from ..authentication import api_admin_required
 
 
 def _error(error, status=400):

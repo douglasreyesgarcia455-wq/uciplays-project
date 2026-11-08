@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Integrante
+from ..modelo.models import Integrante
 
 
 class IntegranteForm(forms.ModelForm):

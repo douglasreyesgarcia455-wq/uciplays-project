@@ -5,10 +5,10 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from .repositories_ranking import RankingRepository
-from .serializers_ranking import RankingSerializer, SancionSerializer
-from .services_sanciones import SancionService
-from .authentication import api_admin_required
+from ..repositories_ranking import RankingRepository
+from ..serializers_ranking import RankingSerializer, SancionSerializer
+from ..services_sanciones import SancionService
+from ..authentication import api_admin_required
 
 
 def _payload(request):

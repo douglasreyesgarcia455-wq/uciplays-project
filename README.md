@@ -7,6 +7,10 @@ Sistema de gestión deportiva con backend Django, PostgreSQL y frontend HTML/CSS
 ```text
 uciplays-project/
 ├── uciplays-django/          # Backend activo Django + PostgreSQL
+│   └── core/
+│       ├── modelo/           # Modelos del dominio
+│       ├── vista/            # Vistas y clases controladoras
+│       └── plantilla/        # Formularios de presentación
 ├── proyecto-jump-frontend/   # Frontend estático activo
 └── docs/                     # Documentación
 ```

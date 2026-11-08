@@ -6,11 +6,11 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from .plantilla.fr_plantilla import IntegranteForm
-from .models import Integrante
-from .serializers_integrantes import IntegranteSerializer
-from .services_integrantes import IntegranteService
-from .authentication import api_admin_required
+from ..plantilla.fr_plantilla import IntegranteForm
+from ..modelo.models import Integrante
+from ..serializers_integrantes import IntegranteSerializer
+from ..services_integrantes import IntegranteService
+from ..authentication import api_admin_required
 
 
 def _payload(request):

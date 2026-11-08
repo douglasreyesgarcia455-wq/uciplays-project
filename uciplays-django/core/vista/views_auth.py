@@ -6,9 +6,9 @@ from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from django.views import View
 
-from .audit import registrar_auditoria
-from .authentication import api_auth_required
-from .models import Auditoria
+from ..audit import registrar_auditoria
+from ..authentication import api_auth_required
+from ..modelo.models import Auditoria
 
 
 class AuthLoginView(View):

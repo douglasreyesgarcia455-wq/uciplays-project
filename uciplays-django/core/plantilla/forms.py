@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Facultad
+from ..modelo.models import Facultad
 
 
 class FacultadForm(forms.ModelForm):

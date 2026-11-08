@@ -5,10 +5,10 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from .plantilla.fr_plantilla import EventoForm
-from .serializers_eventos import EventoSerializer
-from .services_eventos import EventoService
-from .authentication import api_admin_required
+from ..plantilla.fr_plantilla import EventoForm
+from ..serializers_eventos import EventoSerializer
+from ..services_eventos import EventoService
+from ..authentication import api_admin_required
 
 
 def _payload(request):

@@ -1,6 +1,6 @@
-"""Paquete explícito del modelo de dominio de UCI Plays."""
+"""Modelos de dominio de UCI Plays."""
 
-from ..models import (
+from .models import (
     Auditoria,
     Deporte,
     Equipo,

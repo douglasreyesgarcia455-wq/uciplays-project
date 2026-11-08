@@ -1,28 +1,28 @@
 from django.urls import path
 
-from .views import health
-from .views_facultades import (
+from .vista.views import health
+from .vista.views_facultades import (
     AdminFacultadApiView,
     FacultadApiView,
     FacultadView,
     facultad_delete,
 )
-from .views_deportes import DeporteApiView, EquipoApiView
-from .views_deportes_template import DeportesEquiposView
-from .views_integrantes import IntegranteApiView, IntegrantesTemplateView
-from .views_eventos import (
+from .vista.views_deportes import DeporteApiView, EquipoApiView
+from .vista.views_deportes_template import DeportesEquiposView
+from .vista.views_integrantes import IntegranteApiView, IntegrantesTemplateView
+from .vista.views_eventos import (
     EventoApiView,
     EventoIniciarApiView,
     EventoResultadoApiView,
     EventosTemplateView,
 )
-from .views_ranking import (
+from .vista.views_ranking import (
     RankingApiView,
     RankingSancionesTemplateView,
     SancionApiView,
     SancionDeleteApiView,
 )
-from .views_auth import AuditoriaApiView
+from .vista.views_auth import AuditoriaApiView
 from .vista.sp_vistas import (
     AuthLoginView,
     AuthLogoutView,

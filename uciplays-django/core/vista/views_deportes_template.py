@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 
-from .services_deportes import DeporteService, EquipoService
+from ..services_deportes import DeporteService, EquipoService
 
 
 class DeportesEquiposView(View):

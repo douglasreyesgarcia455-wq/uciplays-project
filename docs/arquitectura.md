@@ -33,7 +33,7 @@ Base de datos PostgreSQL
 | Capa | Responsabilidad |
 |---|---|
 | `core/urls.py` | Declarar URLs y vistas |
-| `core/views_*.py` | Coordinar peticiones y respuestas HTTP |
+| `core/vista/views_*.py` | Coordinar peticiones y respuestas HTTP |
 | `core/services_*.py` | Aplicar validaciones y reglas del negocio |
 | `core/repositories*.py` | Encapsular consultas y persistencia |
 | `core/serializers*.py` | Convertir modelos a JSON estable |
@@ -42,13 +42,15 @@ Base de datos PostgreSQL
 
 ## Paquetes explícitos MVT
 
-- `core/modelo/`: punto de entrada explícito para los modelos del dominio.
-- `core/vista/sp_vistas.py`: clases controladoras y adaptadores de vistas.
-- `core/plantilla/fr_plantilla.py`: formularios asociados a las plantillas.
+- `core/modelo/models.py`: modelos del dominio.
+- `core/vista/views_*.py`: clases controladoras organizadas por recurso.
+- `core/vista/sp_vistas.py`: punto de entrada explícito de las clases controladoras.
+- `core/plantilla/forms*.py`: formularios organizados por recurso.
+- `core/plantilla/fr_plantilla.py`: punto de entrada explícito de los formularios.
 - `templates/core/`: archivos HTML de plantilla.
 
-Los módulos `sp_` y `fr_` reutilizan las implementaciones por recurso para
-evitar duplicación y conservar bajo acoplamiento.
+Los módulos `sp_` y `fr_` funcionan como puntos de entrada del paquete; las
+implementaciones reales permanecen dentro de `vista/` y `plantilla/`.
 
 ## Flujo de una consulta pública
 
