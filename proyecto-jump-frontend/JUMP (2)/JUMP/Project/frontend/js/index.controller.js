@@ -1,5 +1,5 @@
 // index.controller.js — Controlador del index (main-event, mini-ranking, tarjetas).
-// Consume /api/eventos, /api/ranking, /api/facultades.
+// Consume /api/public/eventos, /api/public/ranking, /api/public/facultades.
 // Usa evento.participantes (array N:M).
 
 document.addEventListener("DOMContentLoaded", () => {

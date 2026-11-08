@@ -60,10 +60,10 @@ window.adminParticipantes = (function () {
     async function recargar() {
         try {
             const [facultades, equipos, deportes, integrantes] = await Promise.all([
-                window.apiClient.get('/facultades'),
+                window.apiClient.get('/admin/facultades'),
                 window.equiposApi.getEquipos(),
                 window.deportesApi.getDeportes(),
-                window.apiClient.get('/integrantes')
+                window.apiClient.get('/admin/integrantes')
             ]);
             state.facultades = facultades || [];
             state.equipos = equipos || [];

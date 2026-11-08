@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Deportes y equipos - UCI Plays</title>
+</head>
+<body>
+    <h1>Deportes y equipos</h1>
+    <p><a href="/">Inicio</a> | <a href="/facultades/">Facultades</a></p>
+
+    <h2>Deportes</h2>
+    <ul>
+        {% for deporte in deportes %}
+        <li>{{ deporte.nombre }} ({{ deporte.total_equipos }} equipos)</li>
+        {% empty %}
+        <li>No hay deportes registrados.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Equipos</h2>
+    <ul>
+        {% for equipo in equipos %}
+        <li>{{ equipo.nombre }} - {{ equipo.facultad.nombre }} / {{ equipo.deporte.nombre }}</li>
+        {% empty %}
+        <li>No hay equipos registrados.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

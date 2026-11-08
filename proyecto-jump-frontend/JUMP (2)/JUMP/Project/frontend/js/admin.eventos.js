@@ -4,7 +4,7 @@ window.adminEventos = (function () {
     let state = null;
     let paginado = null;
 
-    async function init(ctx) {
+    function init(ctx) {
         state = {
             eventos: ctx.eventos || [],
             deportes: ctx.deportes || [],
@@ -13,16 +13,8 @@ window.adminEventos = (function () {
             onLogin: ctx.onLogin || (() => {})
         };
 
-        // Forzar carga de deportes desde la API si vienen vacíos
-        if (!state.deportes || state.deportes.length === 0) {
-            try {
-                state.deportes = await window.apiClient.get('/deportes');
-            } catch (e) {
-                console.error('Error cargando deportes:', e);
-            }
-        }
-
-        // Inicializar módulo de participantes CON los deportes ya cargados
+        // Inicializar sin esperar peticiones: cargarTodo() puede actualizar el estado
+        // mientras se monta este módulo.
         window.adminEventosParticipantes.init({ equipos: state.equipos, deportes: state.deportes });
         window.adminEventosParticipantes.poblarDeporte();
         
@@ -31,6 +23,21 @@ window.adminEventos = (function () {
         renderLista(state.eventos);
         window.adminEventosParticipantes.agregarFila();
         window.adminEventosParticipantes.agregarFila();
+
+        // Mantener compatibilidad si este módulo se inicializa sin contexto.
+        if (state.deportes.length === 0) {
+            window.apiClient.get('/admin/deportes')
+                .then(deportes => {
+                    if (!state || state.deportes.length > 0) return;
+                    state.deportes = deportes || [];
+                    window.adminEventosParticipantes.actualizar({
+                        equipos: state.equipos,
+                        deportes: state.deportes
+                    });
+                    window.adminEventosParticipantes.poblarDeporte();
+                })
+                .catch(e => console.error('Error cargando deportes:', e));
+        }
     }
 
     function actualizar(ctx) {
@@ -181,7 +188,7 @@ window.adminEventos = (function () {
             participantes: ids.map(id => ({ equipo_id: id }))
         };
         try {
-            await window.apiClient.post('/eventos', payload);
+            await window.apiClient.post('/admin/eventos', payload);
             window.adminToast.mostrar('Evento creado correctamente');
             window.adminEventosParticipantes.limpiar();
             await state.onRecargar();
@@ -210,7 +217,7 @@ window.adminEventos = (function () {
         }
         try {
             const participantes = (ev.participantes || []).map(p => ({ equipo_id: p.equipo_id }));
-            await window.apiClient.put('/eventos/' + id, {
+            await window.apiClient.put('/admin/eventos/' + id, {
                 deporte_id: ev.deporte_id || null,
                 fecha: data.fecha,
                 hora: data.hora,
@@ -234,7 +241,7 @@ window.adminEventos = (function () {
         });
         if (!okBorrar) return;
         try {
-            await window.apiClient.delete('/eventos/' + id);
+            await window.apiClient.delete('/admin/eventos/' + id);
             window.adminToast.mostrar('Evento eliminado correctamente');
             await state.onRecargar();
         } catch (e) {
@@ -272,7 +279,7 @@ window.adminEventos = (function () {
             }
 
             const participantes = (ev.participantes || []).map(p => ({ equipo_id: p.equipo_id }));
-            await window.apiClient.put('/eventos/' + id, {
+            await window.apiClient.put('/admin/eventos/' + id, {
                 deporte_id: ev.deporte_id || null,
                 fecha: fechaFinal,
                 hora: horaFinal,

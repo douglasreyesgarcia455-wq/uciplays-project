@@ -1,0 +1,13 @@
+/* Estilos exclusivos del tab de resultados. */
+.admin-resultados-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+    .admin-resultados-grid {
+        grid-template-columns: 1fr;
+    }
+}

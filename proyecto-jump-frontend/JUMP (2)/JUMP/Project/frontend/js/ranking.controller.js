@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (tbody) {
                 tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px;">Error al cargar el ranking</td></tr>';
             }
-            console.warn('[ranking.controller] /api/ranking falló:', rankingResult.reason);
+            console.warn('[ranking.controller] /api/public/ranking falló:', rankingResult.reason);
             return;
         }
 
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const facultades = facultadesResult.status === 'fulfilled' ? facultadesResult.value : [];
 
         if (facultadesResult.status !== 'fulfilled') {
-            console.warn('[ranking.controller] /api/facultades falló, se usa respaldo.png para todos los logos');
+            console.warn('[ranking.controller] /api/public/facultades falló, se usa respaldo.png para todos los logos');
         }
 
         // Mapa nombre → logo_url
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // /api/ranking ya ordena por puntos DESC; no re-ordenamos.
+        // /api/public/ranking ya ordena por puntos DESC; no re-ordenamos.
 
         ranking.forEach((estudiante, indice) => {
             const nombre = estudiante.nombre || 'Sin nombre';

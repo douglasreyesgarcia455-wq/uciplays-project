@@ -1,61 +1,53 @@
 # UCI Plays
 
-Proyecto de software con backend y dos frontends:
+Sistema de gestión deportiva con backend Django, PostgreSQL y frontend HTML/CSS/JavaScript.
 
-- **Backend**: Node.js + Express + SQLite (casi intacto; único cambio permitido: agregar imágenes/logos estáticos).
-- **Frontend viejo** (`uciplays-frontend/`): React 19 + Vite + Tailwind + React Router. Congelado salvo un enlace en la Navbar para integrar el nuevo.
-- **Frontend nuevo** (`proyecto-jump-frontend/JUMP (2)/JUMP/Project/`): HTML/CSS/JS estático (sin build, sin framework). Se sirve bajo `/jump` a través del backend.
+## Estructura
 
-## Estructura de carpetas
-
-```
+```text
 uciplays-project/
-├── uciplays-backend/         # Node.js, Express, SQLite
-├── uciplays-frontend/        # React + Vite (frontend viejo)
-└── proyecto-jump-frontend/   # Contiene el frontend nuevo estático
-    └── JUMP (2)/JUMP/Project/
-        ├── assets/           # Logos y favicon (versionados)
-        ├── backend/js/       # JS cliente del nuevo (cartelera, estadísticas, etc.)
-        └── frontend/
-            ├── css/
-            └── html/
+├── uciplays-django/          # Backend activo Django + PostgreSQL
+├── proyecto-jump-frontend/   # Frontend estático activo
+└── docs/                     # Documentación
 ```
 
-## Cómo correr cada parte
+El backend Node/Express antiguo se conserva como respaldo fuera del repositorio:
+`/home/lawija/Documentos/uciplays-backend`.
 
-### Backend
+## Ejecución
+
+### Backend Django
+
 ```bash
-cd uciplays-backend
-npm install   # solo si no existe node_modules
-node index.js
-# Servidor en http://localhost:4000
-# Endpoints: /api/eventos, /api/ranking, /api/resultados, /api/auth/login
-# Estáticos: http://localhost:4000/jump/ (frontend nuevo) y /assets/ (logos)
+cd uciplays-django
+.venv/bin/python manage.py migrate
+.venv/bin/python manage.py runserver 127.0.0.1:8000
 ```
 
-### Frontend viejo (React)
+### Frontend estático
+
 ```bash
-cd uciplays-frontend
-npm install
-npm run dev   # http://localhost:5173 (por defecto Vite)
+cd "proyecto-jump-frontend/JUMP (2)/JUMP/Project"
+python3 -m http.server 5500
 ```
 
-### Frontend nuevo (estático)
-Servido por el backend bajo:
-```
-http://localhost:4000/jump/index.html
-http://localhost:4000/jump/cartelera.html
-http://localhost:4000/jump/ranking.html
-http://localhost:4000/jump/estadisticas.html
-```
+Abrir `http://127.0.0.1:5500/jump/frontend/html/index.html`.
+El frontend consume las APIs de Django mediante `http://127.0.0.1:8000/api`.
 
-## Nota sobre bases de datos
+## Base de datos y dependencias
 
-- `uciplays-backend/database.sqlite`: base de datos activa usada por el backend.
-- `uciplays-backend/uciplays.db`: duplicada obsoleta. Se comparará con `database.sqlite`; si está vacía o idéntica se eliminará, si tiene datos distintos se apartará como backup externo. No se versiona ninguna de las dos (`.gitignore` ignora `*.sqlite` y `*.db`).
+- PostgreSQL es la base de datos activa de Django.
+- No se migraron los datos completos de SQLite; únicamente facultades y logos.
+- Los IDs se generan automáticamente mediante `BigAutoField`.
+- Las imágenes están en `uciplays-django/img/` y en la carpeta `img` del frontend.
+- El backend Node antiguo y sus dependencias están en `/home/lawija/Documentos/`.
+- `/home/lawija/Documentos/node_modules` no es necesario para ejecutar Django ni el frontend estático.
 
-## Reglas de integración
+## API
 
-- Backend: no se altera lógica existente. Solo se agregan archivos estáticos y endpoints de facultades (`GET /api/facultades`, `GET /api/facultades/:id`).
-- Frontend viejo: congelado. Se agrega un único enlace en `Navbar.jsx` apuntando al frontend nuevo.
-- Autenticación: no compartida. Cada frontend maneja su propio acceso de forma independiente.
+- Consultas públicas: `/api/public/...`
+- Operaciones administrativas: `/api/admin/...`
+- Login administrativo: `/api/admin/auth/login`
+- Las operaciones administrativas requieren `Authorization: Bearer <JWT>`.
+
+Consulta [`docs/`](./docs/) para arquitectura, flujos y endpoints completos.

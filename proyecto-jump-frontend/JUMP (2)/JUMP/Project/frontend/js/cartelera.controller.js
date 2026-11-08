@@ -1,5 +1,5 @@
 // cartelera.controller.js — Controlador de cartelera.
-// Consume /api/eventos. Usa evento.participantes (array N:M).
+// Consume /api/public/eventos. Usa evento.participantes (array N:M).
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!window.eventosApi || typeof window.eventosApi.getEventos !== 'function') {

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Ranking y sanciones - UCI Plays</title>
+</head>
+<body>
+    <h1>Ranking</h1>
+    <p><a href="/">Inicio</a> | <a href="/eventos/">Eventos</a></p>
+    <ol>
+        {% for facultad in ranking %}
+        <li>{{ facultad.nombre }} — {{ facultad.puntos }} puntos</li>
+        {% empty %}
+        <li>No hay facultades en el ranking.</li>
+        {% endfor %}
+    </ol>
+
+    <h2>Sanciones</h2>
+    <ul>
+        {% for sancion in sanciones %}
+        <li>{{ sancion.equipo.nombre }}: {{ sancion.puntos_descontados }} — {{ sancion.motivo }}</li>
+        {% empty %}
+        <li>No hay sanciones registradas.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

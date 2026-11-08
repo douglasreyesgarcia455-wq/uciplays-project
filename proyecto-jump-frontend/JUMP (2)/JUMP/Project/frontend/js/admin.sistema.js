@@ -14,7 +14,7 @@ window.adminSistema = (function () {
     async function descargarBackup() {
         try {
             const token = window.authApi.getToken();
-            const res = await fetch('/api/backup', {
+            const res = await fetch('/api/admin/backup', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -35,7 +35,7 @@ window.adminSistema = (function () {
 
     async function recargarAuditoria() {
         try {
-            const rows = await window.apiClient.get('/auditoria?limite=100');
+            const rows = await window.apiClient.get('/admin/auditoria?limite=100');
             renderAuditoria(rows || []);
         } catch (e) {
             if (e.status === 401) return;

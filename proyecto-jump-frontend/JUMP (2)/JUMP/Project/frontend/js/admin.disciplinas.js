@@ -73,7 +73,7 @@ window.adminDisciplinas = (function () {
             return;
         }
         try {
-            await window.apiClient.post('/deportes', { nombre });
+            await window.apiClient.post('/admin/deportes', { nombre });
             window.adminToast.mostrar('Disciplina creada correctamente');
             $input.value = '';
             await recargar();
@@ -94,7 +94,7 @@ window.adminDisciplinas = (function () {
         if (!data) return;
         if (data.nombre.length < 2) { window.adminToast.mostrar('Nombre muy corto', 'error'); return; }
         try {
-            await window.apiClient.put('/deportes/' + id, { nombre: data.nombre });
+            await window.apiClient.put('/admin/deportes/' + id, { nombre: data.nombre });
             window.adminToast.mostrar('Disciplina actualizada');
             await recargar();
         } catch (e) {
@@ -106,7 +106,7 @@ window.adminDisciplinas = (function () {
     async function borrar(id) {
         if (!confirm('¿Eliminar esta disciplina? No se puede si tiene equipos asociados.')) return;
         try {
-            await window.apiClient.delete('/deportes/' + id);
+            await window.apiClient.delete('/admin/deportes/' + id);
             window.adminToast.mostrar('Disciplina eliminada');
             await recargar();
         } catch (e) {

@@ -12,6 +12,6 @@ window.eventosApi = {
             });
         }
         const qs = params.toString();
-        return window.apiClient.get('/eventos' + (qs ? '?' + qs : ''));
+        return window.apiClient.get('/public/eventos' + (qs ? '?' + qs : ''));
     }
 };

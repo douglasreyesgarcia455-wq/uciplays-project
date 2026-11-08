@@ -1,3 +1,3 @@
 window.facultadesApi = {
-    getFacultades: () => window.apiClient.get('/facultades')
+    getFacultades: () => window.apiClient.get('/public/facultades')
 };

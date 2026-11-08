@@ -70,7 +70,7 @@ window.adminParticipantesFacultades = (function () {
             return;
         }
         try {
-            await window.apiClient.post('/facultades', { nombre, logo_url: $logo ? $logo.value.trim() : null });
+            await window.apiClient.post('/admin/facultades', { nombre, logo_url: $logo ? $logo.value.trim() : null });
             window.adminToast.mostrar('Facultad registrada');
             $nom.value = '';
             if ($logo) $logo.value = '';
@@ -95,7 +95,7 @@ window.adminParticipantesFacultades = (function () {
         if (!data) return;
         if (data.nombre.length < 2) { window.adminToast.mostrar('Nombre muy corto', 'error'); return; }
         try {
-            await window.apiClient.put('/facultades/' + id, { nombre: data.nombre, logo_url: data.logo_url || null });
+            await window.apiClient.put('/admin/facultades/' + id, { nombre: data.nombre, logo_url: data.logo_url || null });
             window.adminToast.mostrar('Facultad actualizada');
             await state.onRecargar();
         } catch (e) {
@@ -123,7 +123,7 @@ window.adminParticipantesFacultades = (function () {
             if (!ok) return;
         }
         try {
-            await window.apiClient.delete('/facultades/' + id + (cascade ? '?cascade=true' : ''));
+            await window.apiClient.delete('/admin/facultades/' + id + (cascade ? '?cascade=true' : ''));
             window.adminToast.mostrar('Facultad eliminada');
             await state.onRecargar();
         } catch (e) {

@@ -13,6 +13,7 @@ window.adminEventosParticipantes = (function () {
     function actualizar(ctx) {
         if (!ctx) return;
         state.equipos = ctx.equipos || [];
+        state.deportes = ctx.deportes || [];
     }
 
     function enlazar() {

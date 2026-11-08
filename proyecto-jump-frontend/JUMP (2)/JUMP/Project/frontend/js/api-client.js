@@ -2,7 +2,11 @@
 // Bajo acoplamiento: no lee localStorage directamente; el token se inyecta
 // desde auth.api.js mediante setTokenProvider.
 
-const API_BASE = '/api';
+const API_BASE = window.UCI_PLAYS_API_BASE || 'http://127.0.0.1:8000/api';
+
+function endpoint(path) {
+    return API_BASE + path + (path.endsWith('/') ? '' : '/');
+}
 
 let _tokenProvider = () => null;
 function setTokenProvider(fn) { if (typeof fn === 'function') _tokenProvider = fn; }
@@ -21,7 +25,7 @@ function manejar401(response) {
 }
 
 async function get(path) {
-    const response = await fetch(API_BASE + path, { headers: getHeaders() });
+    const response = await fetch(endpoint(path), { headers: getHeaders() });
     if (!response.ok) {
         manejar401(response);
         const err = new Error('HTTP ' + response.status + ' requesting ' + path);
@@ -32,7 +36,7 @@ async function get(path) {
 }
 
 async function post(path, body) {
-    const response = await fetch(API_BASE + path, {
+    const response = await fetch(endpoint(path), {
         method: 'POST',
         headers: getHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(body || {})
@@ -48,7 +52,7 @@ async function post(path, body) {
 }
 
 async function put(path, body) {
-    const response = await fetch(API_BASE + path, {
+    const response = await fetch(endpoint(path), {
         method: 'PUT',
         headers: getHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(body || {})
@@ -64,7 +68,7 @@ async function put(path, body) {
 }
 
 async function del(path) {
-    const response = await fetch(API_BASE + path, { method: 'DELETE', headers: getHeaders() });
+    const response = await fetch(endpoint(path), { method: 'DELETE', headers: getHeaders() });
     if (!response.ok) {
         manejar401(response);
         const err = new Error('HTTP ' + response.status + ' requesting ' + path);

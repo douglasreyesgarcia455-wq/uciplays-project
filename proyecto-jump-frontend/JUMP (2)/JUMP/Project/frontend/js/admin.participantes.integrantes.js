@@ -71,7 +71,7 @@ window.adminParticipantesIntegrantes = (function () {
         if (!$mat.value.trim()) { window.adminValidacion.marcarError($mat, 'Matrícula requerida'); ok = false; }
         if (!ok) return;
         try {
-            await window.apiClient.post('/integrantes', {
+            await window.apiClient.post('/admin/integrantes', {
                 nombre: $nom.value.trim(),
                 ci: $ci.value.trim(),
                 matricula: $mat.value.trim(),
@@ -100,7 +100,7 @@ window.adminParticipantesIntegrantes = (function () {
         });
         if (!data) return;
         try {
-            await window.apiClient.put('/integrantes/' + id, {
+            await window.apiClient.put('/admin/integrantes/' + id, {
                 nombre: data.nombre,
                 ci: data.ci,
                 matricula: data.matricula,
@@ -122,7 +122,7 @@ window.adminParticipantesIntegrantes = (function () {
         });
         if (!ok) return;
         try {
-            await window.apiClient.delete('/integrantes/' + id);
+            await window.apiClient.delete('/admin/integrantes/' + id);
             window.adminToast.mostrar('Integrante eliminado');
             await state.onRecargar();
         } catch (e) {

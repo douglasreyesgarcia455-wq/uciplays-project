@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Integrantes - UCI Plays</title>
+</head>
+<body>
+    <h1>Integrantes</h1>
+    <p><a href="/">Inicio</a> | <a href="/deportes-equipos/">Deportes y equipos</a></p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.as_p }}
+        <button type="submit">Agregar integrante</button>
+    </form>
+
+    <ul>
+        {% for integrante in integrantes %}
+        <li>
+            {{ integrante.nombre }} — CI: {{ integrante.ci }} —
+            {{ integrante.equipo.nombre }}
+        </li>
+        {% empty %}
+        <li>No hay integrantes registrados.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

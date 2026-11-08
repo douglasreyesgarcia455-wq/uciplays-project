@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Eventos - UCI Plays</title>
+</head>
+<body>
+    <h1>Eventos</h1>
+    <p><a href="/">Inicio</a> | <a href="/integrantes/">Integrantes</a></p>
+    <ul>
+        {% for evento in eventos %}
+        <li>
+            {{ evento.deporte.nombre }} - {{ evento.fecha|default:"Sin fecha" }}
+            - {{ evento.estado }} - {{ evento.lugar|default:"Sin lugar" }}
+            <ul>
+                {% for participante in evento.eventoparticipante_set.all %}
+                <li>{{ participante.equipo.nombre }} ({{ participante.puntos }} puntos)</li>
+                {% empty %}
+                <li>Sin participantes.</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% empty %}
+        <li>No hay eventos registrados.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

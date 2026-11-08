@@ -85,7 +85,7 @@ window.adminSanciones = (function () {
         if (!$m.value.trim()) { window.adminValidacion.marcarError($m, 'Motivo requerido'); ok = false; }
         if (!ok) return;
         try {
-            await window.apiClient.post('/sanciones', {
+            await window.apiClient.post('/admin/sanciones', {
                 equipo_id: parseInt($eq.value),
                 puntos_descontados: puntos,
                 motivo: $m.value.trim(),
@@ -108,7 +108,7 @@ window.adminSanciones = (function () {
         });
         if (!ok) return;
         try {
-            await window.apiClient.delete('/sanciones/' + id);
+            await window.apiClient.delete('/admin/sanciones/' + id);
             window.adminToast.mostrar('Sanción eliminada');
             await recargar();
         } catch (e) {

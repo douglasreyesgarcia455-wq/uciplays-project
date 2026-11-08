@@ -65,21 +65,27 @@ window.adminParticipantesEquipos = (function () {
     }
 
     async function crear() {
-        if (!state.facultadActual) { window.adminToast.mostrar('Selecciona una facultad primero', 'error'); return; }
         const $nom = document.getElementById('equipo-nombre');
+        const $fac = document.getElementById('equipo-facultad');
         const $dep = document.getElementById('equipo-deporte');
-        if (!$nom || !$dep) return;
+        if (!$nom || !$fac || !$dep) return;
         window.adminValidacion.limpiarError($nom);
         const nombre = $nom.value.trim();
+        const facultadId = parseInt($fac.value || state.facultadActual?.id, 10);
+        const deporteId = parseInt($dep.value, 10);
         if (nombre.length < 2) {
             window.adminValidacion.marcarError($nom, 'Mínimo 2 caracteres');
             return;
         }
+        if (!facultadId || !deporteId) {
+            window.adminToast.mostrar('Selecciona una facultad y un deporte', 'error');
+            return;
+        }
         try {
-            await window.apiClient.post('/equipos', {
+            await window.apiClient.post('/admin/equipos', {
                 nombre,
-                facultad_id: state.facultadActual.id,
-                deporte_id: parseInt($dep.value)
+                facultad_id: facultadId,
+                deporte_id: deporteId
             });
             window.adminToast.mostrar('Equipo registrado');
             $nom.value = '';
@@ -102,7 +108,7 @@ window.adminParticipantesEquipos = (function () {
         if (!data) return;
         if (data.nombre.length < 2) { window.adminToast.mostrar('Nombre muy corto', 'error'); return; }
         try {
-            await window.apiClient.put('/equipos/' + id, {
+            await window.apiClient.put('/admin/equipos/' + id, {
                 nombre: data.nombre,
                 facultad_id: eq.facultad_id,
                 deporte_id: eq.deporte_id
@@ -127,7 +133,7 @@ window.adminParticipantesEquipos = (function () {
         });
         if (!ok) return;
         try {
-            await window.apiClient.delete('/equipos/' + id);
+            await window.apiClient.delete('/admin/equipos/' + id);
             window.adminToast.mostrar('Equipo eliminado');
             await state.onRecargar();
         } catch (e) {

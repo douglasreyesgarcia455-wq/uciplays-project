@@ -1,8 +1,8 @@
 // auth.api.js — Módulo de autenticación.
 window.authApi = {
-    login: (username, password) => window.apiClient.post('/auth/login', { username, password }),
+    login: (username, password) => window.apiClient.post('/admin/auth/login', { username, password }),
     logout: async () => {
-        try { await window.apiClient.post('/auth/logout', {}); } catch (e) {}
+        try { await window.apiClient.post('/admin/auth/logout', {}); } catch (e) {}
         localStorage.removeItem('token');
         localStorage.removeItem('user');
     },

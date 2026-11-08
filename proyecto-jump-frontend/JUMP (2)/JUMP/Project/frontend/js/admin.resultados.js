@@ -2,8 +2,8 @@
 // - Select de eventos en curso.
 // - Tabla de participantes para asignar posiciones.
 // - Previsualización del medallero (suma puntos del evento seleccionado).
-// - Guardar resultado (POST /api/eventos/:id/resultado).
-// - Medallero real desde /api/ranking.
+// - Guardar resultado (POST /api/admin/eventos/:id/resultado).
+// - Medallero real desde /api/public/ranking.
 
 window.adminResultados = (function () {
     let state = {
@@ -238,7 +238,7 @@ window.adminResultados = (function () {
         });
         if (!okGuardar) return;
         try {
-            await window.apiClient.post('/eventos/' + state.eventoSeleccionado.id + '/resultado', { resultados });
+            await window.apiClient.post('/admin/eventos/' + state.eventoSeleccionado.id + '/resultado', { resultados });
             window.adminToast.mostrar('Resultado guardado correctamente');
             state.eventoSeleccionado = null;
             state.posiciones = {};
